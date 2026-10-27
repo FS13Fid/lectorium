@@ -55,7 +55,8 @@ MODEL_NAME = os.getenv("EMBEDDING_MODEL", "sentence-transformers/paraphrase-mult
 EMBEDDING_CACHE = Path(os.getenv("FASTEMBED_CACHE_PATH", DATA / "fastembed_cache"))
 ASR_MODEL = os.getenv("ASR_MODEL", "gigaam-v3-e2e-rnnt")
 MULTILINGUAL_ASR_MODEL = os.getenv("MULTILINGUAL_ASR_MODEL", "Systran/faster-whisper-base")
-SPEECH_LANGUAGES = {"ru": "Русский", "en": "English", "be": "Беларуская", "zh": "中文", "de": "Deutsch", "es": "Español"}
+SPEECH_LANGUAGES = {"auto": "Автоопределение", "ru": "Русский", "en": "English", "zh": "中文", "de": "Deutsch", "es": "Español"}
+SUBTITLE_LANGUAGES = {"ru": "Русский", "en": "English", "zh": "中文", "de": "Deutsch", "es": "Español"}
 os.environ.setdefault("HF_HOME", str(DATA / "hf_cache"))
 
 app = FastAPI(title="Лекторий — семантический поиск по лекциям", version="1.0.0")
@@ -735,6 +736,8 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
             raise subprocess.CalledProcessError(ffmpeg.returncode, "ffmpeg", output=ffmpeg_out, stderr=ffmpeg_err)
         duration = media_duration(local_media)
         speech_name = SPEECH_LANGUAGES.get(speech_language, SPEECH_LANGUAGES["ru"])
+        requested_language = speech_language
+        detected_language = None if requested_language == "auto" else requested_language
         model = None
         if speech_language == "ru":
             set_progress(lecture_id, 47, "Загружаем GigaAM для русской речи")
@@ -758,8 +761,28 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
                 result = model.transcribe_audio(Audio(samples, rate))
                 recognized = result.segments
             else:
-                recognized, _ = model.transcribe(samples.reshape(-1), language=speech_language,
+                recognized, info = model.transcribe(samples.reshape(-1), language=None if detected_language is None else detected_language,
                     beam_size=5, vad_filter=False, condition_on_previous_text=False)
+                if requested_language == "auto" and detected_language is None:
+                    candidate = (getattr(info, "language", None) or "").lower()
+                    if candidate not in {"ru", "en", "zh", "de", "es"}:
+                        raise RuntimeError("Автоопределение выявило неподдерживаемый язык. Выберите русский, английский, китайский, немецкий или испанский вручную.")
+                    detected_language = candidate
+                    speech_language = candidate
+                    speech_name = SPEECH_LANGUAGES[candidate]
+                    with closing(db()) as con:
+                        con.execute("UPDATE lectures SET speech_language=? WHERE id=?", (candidate, lecture_id)); con.commit()
+                    if candidate == "ru":
+                        recognized = []
+                        del model
+                        from stt_ru import Transcriber
+                        from stt_ru.audio import Audio
+                        from stt_ru.vad import VadOptions
+                        model = Transcriber(model=ASR_MODEL, quantization="int8", split_channels=False,
+                                            vad=VadOptions(min_silence_duration_ms=300, speech_pad_ms=100))
+                        recognized = model.transcribe_audio(Audio(samples, rate)).segments
+                    else:
+                        recognized = list(recognized)
             for segment in recognized:
                 text = re.sub(r"\s+", " ", segment.text).strip()
                 if text:
@@ -1552,7 +1575,7 @@ async def upload_lecture(
     title: str = Form(""),
     folder_id: str = Form(""),
     new_folder_name: str = Form(""),
-    speech_language: str = Form("ru")
+    speech_language: str = Form("auto")
 ):
     if speech_language not in SPEECH_LANGUAGES:
         raise HTTPException(400, "Выберите поддерживаемый язык распознавания")
@@ -1595,7 +1618,7 @@ class LinkRequest(BaseModel):
     quality: str = "best"
     folder_id: str | None = None
     new_folder_name: str | None = None
-    speech_language: str = "ru"
+    speech_language: str = "auto"
 
 
 @app.post("/api/lectures/link", status_code=202)
@@ -1742,7 +1765,7 @@ class SubtitleTranslationRequest(BaseModel):
 @app.post("/api/lectures/{lecture_id}/subtitles/translate")
 def translate_lecture_subtitles(lecture_id: str, body: SubtitleTranslationRequest, request: Request):
     """Translate a bounded batch in memory; the original transcript and media stay untouched."""
-    if body.target_language not in SPEECH_LANGUAGES:
+    if body.target_language not in SUBTITLE_LANGUAGES:
         raise HTTPException(400, "Выберите поддерживаемый язык перевода")
     if body.offset < 0 or not 1 <= body.limit <= 12:
         raise HTTPException(400, "Недопустимый диапазон субтитров")
