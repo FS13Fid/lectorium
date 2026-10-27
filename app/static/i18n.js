@@ -8,9 +8,6 @@
     en: {
       'Язык интерфейса':'Interface language','ЗНАНИЯ — НАЙДЕНЫ':'KNOWLEDGE — FOUND','В каждой лекции':'Every lecture has','есть ':'an ','ответ.':'answer.','Ищите идеи и объяснения, а не отдельные слова.':'Search for ideas and explanations, not just words.','Мы покажем нужный момент и поможем разобраться.':'We’ll find the right moment and help you understand.','Нажмите на лупу,':'Click the magnifier','чтобы найти идею':'to find an idea','идея найдена':'idea found','СЕМАНТИЧЕСКИЙ ПОИСК':'SEMANTIC SEARCH','Ищет по всем готовым лекциям':'Searches all processed lectures','Найти':'Search','ВАША БИБЛИОТЕКА':'YOUR LIBRARY','Лекции ':'Lectures ','Добавить лекцию':'Add a lecture','Начните с первой лекции':'Start with your first lecture','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'Upload a video to create a transcript, chapters and semantic search.','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'LICENSE AND TERMS OF USE','Язык речи в видео':'Spoken language in the video','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'Choose the language spoken in the video. Interface language is selected separately.','Название лекции':'Lecture title','Папка для лекции':'Lecture folder','＋ Новая папка':'＋ New folder','Без папки (основная библиотека)':'No folder (main library)','Отмена':'Cancel','Создастся новая папка, и файл сразу будет перемещён в неё.':'A new folder will be created and the file moved into it.','Перетащите видео сюда':'Drop a video here','или ':'or ','выберите файл':'choose a file','Ссылка':'Link','Файл видео':'Video file','Ссылка на видео':'Video link','Качество видео':'Video quality','Лучшее доступное':'Best available','Начать обработку ':'Start processing ','Отменить загрузку':'Cancel upload','Личный кабинет':'My account','ЛИЧНОЕ ПРОСТРАНСТВО':'YOUR SPACE','С возвращением':'Welcome back','Войдите, чтобы открыть свою библиотеку лекций.':'Sign in to open your lecture library.','Войти':'Sign in','Создать аккаунт':'Create account','Логин':'Username','Пароль':'Password','Введите логин и пароль вашего кабинета.':'Enter your account username and password.','ВАШ АККАУНТ':'YOUR ACCOUNT','Свои буквы':'Your initials','Сохранить':'Save','Загрузить своё фото':'Upload your photo','лекций':'lectures','готово':'ready','Изменить пароль':'Change password','Выйти из аккаунта ':'Sign out ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'MOVE LECTURE','Переместить лекцию':'Move lecture','Выберите папку или создайте новую.':'Choose a folder or create one.','Или создать новую папку':'Or create a new folder','Создать и переместить ':'Create and move ','Оглавление':'Outline','Краткий пересказ':'Summary','Обновить пересказ и главы':'Refresh summary and chapters','Перераспознать речь':'Re-transcribe speech','Транскрипт':'Transcript','Главы':'Chapters','Удалить лекцию':'Delete lecture','Администрирование':'Administration','Аккаунты':'Accounts','Видео на сервере':'Server videos','Настройки':'Settings','Создать папку':'Create folder','Новая папка':'New folder','Собрать лекции вместе':'Group your lectures','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'Give the folder a short name. You can move lectures into it from each lecture card.','Название папки':'Folder name','Создать папку ':'Create folder ','Папки с лекциями':'Lecture folders'
     },
-    be: {
-      'Язык интерфейса':'Мова інтэрфейсу','ЗНАНИЯ — НАЙДЕНЫ':'ВЕДЫ — ЗНОЙДЗЕНЫ','В каждой лекции':'У кожнай лекцыі ёсць','есть ':' ','ответ.':'адказ.','Ищите идеи и объяснения, а не отдельные слова.':'Шукайце ідэі і тлумачэнні, а не асобныя словы.','Мы покажем нужный момент и поможем разобраться.':'Мы пакажам патрэбны момант і дапаможам разабрацца.','Нажмите на лупу,':'Націсніце на лупу,','чтобы найти идею':'каб знайсці ідэю','идея найдена':'ідэя знойдзена','СЕМАНТИЧЕСКИЙ ПОИСК':'СЭМАНТЫЧНЫ ПОШУК','Ищет по всем готовым лекциям':'Шукае ва ўсіх апрацаваных лекцыях','Найти':'Знайсці','ВАША БИБЛИОТЕКА':'ВАША БІБЛІЯТЭКА','Лекции ':'Лекцыі ','Добавить лекцию':'Дадаць лекцыю','Начните с первой лекции':'Пачніце з першай лекцыі','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'Загрузіце відэа — мы падрыхтуем расшыфроўку, раздзелы і сэмантычны пошук.','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'ЛІЦЭНЗІЯ І ЎМОВЫ ВЫКАРЫСТАННЯ','Язык речи в видео':'Мова маўлення ў відэа','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'Выберыце мову, на якой гавораць у відэа. Мова інтэрфейсу змяняецца асобна.','Название лекции':'Назва лекцыі','Папка для лекции':'Папка для лекцыі','＋ Новая папка':'＋ Новая папка','Без папки (основная библиотека)':'Без папкі (асноўная бібліятэка)','Отмена':'Скасаваць','Создастся новая папка, и файл сразу будет перемещён в неё.':'Створыцца новая папка, і файл адразу будзе перамешчаны ў яе.','Перетащите видео сюда':'Перацягніце відэа сюды','или ':'або ','выберите файл':'выберыце файл','Ссылка':'Спасылка','Файл видео':'Відэафайл','Ссылка на видео':'Спасылка на відэа','Качество видео':'Якасць відэа','Лучшее доступное':'Найлепшая даступная','Начать обработку ':'Пачаць апрацоўку ','Отменить загрузку':'Скасаваць загрузку','Личный кабинет':'Асабісты кабінет','ЛИЧНОЕ ПРОСТРАНСТВО':'АСАБІСТАЯ ПРАСТОРА','С возвращением':'З вяртаннем','Войдите, чтобы открыть свою библиотеку лекций.':'Увайдзіце, каб адкрыць сваю бібліятэку лекцый.','Войти':'Увайсці','Создать аккаунт':'Стварыць уліковы запіс','Логин':'Лагін','Пароль':'Пароль','Введите логин и пароль вашего кабинета.':'Увядзіце лагін і пароль свайго кабінета.','ВАШ АККАУНТ':'ВАШ УЛІКОВЫ ЗАПІС','Свои буквы':'Вашыя літары','Сохранить':'Захаваць','Загрузить своё фото':'Загрузіць сваё фота','лекций':'лекцый','готово':'гатова','Изменить пароль':'Змяніць пароль','Выйти из аккаунта ':'Выйсці з уліковага запісу ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'ПЕРАМЯСЦІЦЬ ЛЕКЦЫЮ','Переместить лекцию':'Перамясціць лекцыю','Выберите папку или создайте новую.':'Выберыце папку або стварыце новую.','Или создать новую папку':'Або стварыць новую папку','Создать и переместить ':'Стварыць і перамясціць ','Оглавление':'Змест','Краткий пересказ':'Кароткі пераказ','Обновить пересказ и главы':'Абнавіць пераказ і раздзелы','Перераспознать речь':'Паўторна распазнаць маўленне','Транскрипт':'Расшыфроўка','Главы':'Раздзелы','Удалить лекцию':'Выдаліць лекцыю','Администрирование':'Адміністраванне','Аккаунты':'Уліковыя запісы','Видео на сервере':'Відэа на серверы','Настройки':'Налады','Создать папку':'Стварыць папку','Новая папка':'Новая папка','Собрать лекции вместе':'Збярыце лекцыі разам','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'Дайце папцы кароткую назву. Лекцыі можна будзе перамяшчаць у яе з карткі запісу.','Название папки':'Назва папкі','Создать папку ':'Стварыць папку ','Папки с лекциями':'Папкі з лекцыямі'
-    },
     zh: {
       'Язык интерфейса':'界面语言','ЗНАНИЯ — НАЙДЕНЫ':'知识，已找到','В каждой лекции':'每堂课中都有','есть ':'','ответ.':'答案。','Ищите идеи и объяснения, а не отдельные слова.':'搜索观点和解释，而不只是单个词。','Мы покажем нужный момент и поможем разобраться.':'我们会定位相关片段，帮助您理解。','Нажмите на лупу,':'点击放大镜','чтобы найти идею':'查找观点','идея найдена':'已找到观点','СЕМАНТИЧЕСКИЙ ПОИСК':'语义搜索','Ищет по всем готовым лекциям':'搜索所有已处理的课程','Найти':'搜索','ВАША БИБЛИОТЕКА':'您的资料库','Лекции ':'课程 ','Добавить лекцию':'添加课程','Начните с первой лекции':'从第一堂课开始','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'上传视频，即可生成转录、章节和语义搜索。','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'许可证与使用条款','Язык речи в видео':'视频语音语言','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'请选择视频中的语音语言。界面语言单独设置。','Название лекции':'课程名称','Папка для лекции':'课程文件夹','＋ Новая папка':'＋ 新建文件夹','Без папки (основная библиотека)':'无文件夹（主资料库）','Отмена':'取消','Создастся новая папка, и файл сразу будет перемещён в неё。':'将创建文件夹并移动此文件。','Перетащите видео сюда':'将视频拖到此处','или ':'或','выберите файл':'选择文件','Ссылка':'链接','Файл видео':'视频文件','Ссылка на видео':'视频链接','Качество видео':'视频画质','Лучшее доступное':'最佳可用','Начать обработку ':'开始处理 ','Отменить загрузку':'取消上传','Личный кабинет':'个人账户','ЛИЧНОЕ ПРОСТРАНСТВО':'个人空间','С возвращением':'欢迎回来','Войдите, чтобы открыть свою библиотеку лекций.':'登录以打开您的课程资料库。','Войти':'登录','Создать аккаунт':'创建账户','Логин':'用户名','Пароль':'密码','Введите логин и пароль вашего кабинета.':'输入账户用户名和密码。','ВАШ АККАУНТ':'您的账户','Свои буквы':'自定义字母','Сохранить':'保存','Загрузить своё фото':'上传头像','лекций':'堂课程','готово':'已完成','Изменить пароль':'更改密码','Выйти из аккаунта ':'退出账户 ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'移动课程','Переместить лекцию':'移动课程','Выберите папку или создайте новую.':'选择文件夹或新建文件夹。','Или создать новую папку':'或新建文件夹','Создать и переместить ':'创建并移动 ','Оглавление':'目录','Краткий пересказ':'摘要','Обновить пересказ и главы':'更新摘要和章节','Перераспознать речь':'重新转录语音','Транскрипт':'转录文本','Главы':'章节','Удалить лекцию':'删除课程','Администрирование':'管理','Аккаунты':'账户','Видео на сервере':'服务器视频','Настройки':'设置','Создать папку':'新建文件夹','Новая папка':'新建文件夹','Собрать лекции вместе':'整理课程','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'为文件夹设置简短名称，之后可从课程卡片移动课程。','Название папки':'文件夹名称','Создать папку ':'创建文件夹 ','Папки с лекциями':'课程文件夹'
     },
@@ -22,130 +19,132 @@
     }
   };
   const extraRows=[
-    ['БИБЛИОТЕКА','LIBRARY','БІБЛІЯТЭКА','图书馆','BIBLIOTHEK','BIBLIOTECA'],
-    ['Все лекции','All lectures','Усе лекцыі','所有课程','Alle Vorlesungen','Todas las clases'],
-    ['Свернуть меню','Collapse menu','Згарнуць меню','收起菜单','Menü einklappen','Contraer menú'],
-    ['Развернуть меню','Expand menu','Разгарнуць меню','展开菜单','Menü ausklappen','Expandir menú'],
-    ['Как устроен проект','How it works','Як працуе праект','项目介绍','So funktioniert das Projekt','Cómo funciona'],
-    ['Например, Введение в машинное обучение','For example, Introduction to machine learning','Напрыклад, Уводзіны ў машыннае навучанне','例如：机器学习导论','Zum Beispiel: Einführung in maschinelles Lernen','Por ejemplo: Introducción al aprendizaje automático'],
-    ['Поддерживаются YouTube, VK Видео, Rutube и многие платформы yt-dlp. Доступные разрешения зависят от ролика.','YouTube, VK Video, Rutube and many yt-dlp platforms are supported. Available resolutions depend on the video.','Падтрымліваюцца YouTube, VK Відэа, Rutube і многія платформы yt-dlp. Даступная якасць залежыць ад відэа.','支持 YouTube、VK Video、Rutube 和许多 yt-dlp 平台。可用清晰度取决于视频。','YouTube, VK Video, Rutube und viele yt-dlp-Plattformen werden unterstützt. Die verfügbaren Auflösungen hängen vom Video ab.','Se admiten YouTube, VK Video, Rutube y muchas plataformas de yt-dlp. La resolución disponible depende del vídeo.'],
-    ['Переместить в папку','Move to folder','Перамясціць у папку','移动到文件夹','In Ordner verschieben','Mover a carpeta'],
-    ['С начала','From the beginning','З пачатку','从头开始','Von Anfang an','Desde el principio'],
-    ['ГОТОВА','READY','ГОТВА','已就绪','BEREIT','LISTA'],
-    ['ОШИБКА','ERROR','ПАМЫЛКА','错误','FEHLER','ERROR'],
-    ['ОБРАБОТКА','PROCESSING','АПРАЦОЎКА','处理中','IN BEARBEITUNG','PROCESANDO'],
-    ['ГОТОВИТСЯ','QUEUED','У ЧАРЗЕ','排队中','IN WARTESCHLANGE','EN COLA'],
-    ['лучшее доступное','best available','найлепшае даступнае','最佳可用','beste verfügbare','la mejor disponible'],
-    ['Краткий конспект','Short notes','Кароткі канспект','简要笔记','Kurze Notizen','Apuntes breves'],
-    ['Краткий пересказ','Short summary','Кароткі пераказ','简短摘要','Kurze Zusammenfassung','Resumen breve'],
-    ['Загружаем транскрипт…','Loading transcript…','Загружаем расшыфроўку…','正在加载转录文本…','Transkript wird geladen…','Cargando transcripción…'],
-    ['Разделы появятся после обработки.','Chapters will appear after processing.',"Раздзелы з'явяцца пасля апрацоўкі.",'处理完成后将显示章节。','Kapitel erscheinen nach der Verarbeitung.','Los capítulos aparecerán al terminar el procesamiento.'],
-    ['Разделы не найдены.','No chapters found.','Раздзелы не знойдзены.','未找到章节。','Keine Kapitel gefunden.','No se encontraron capítulos.'],
-    ['Составляем…','Creating…','Ствараем…','正在生成…','Wird erstellt…','Creando…'],
-    ['Готово','Done','Гатова','完成','Fertig','Listo'],
-    ['Сохраняем…','Saving…','Захоўваем…','正在保存…','Wird gespeichert…','Guardando…'],
-    ['Аватар сохранён','Avatar saved','Аватар захаваны','头像已保存','Avatar gespeichert','Avatar guardado'],
-    ['Лекция не найдена','Lecture not found','Лекцыя не знойдзена','未找到课程','Vorlesung nicht gefunden','Clase no encontrada'],
-    ['Лекция по ссылке','Lecture from link','Лекцыя па спасылцы','链接课程','Vorlesung über Link','Clase desde enlace'],
-    ['Загрузка модели распознавания','Loading speech model','Загрузка мадэлі распазнавання','正在加载语音识别模型','Spracherkennungsmodell wird geladen','Cargando el modelo de voz']
-    ,['НОВАЯ ЛЕКЦИЯ','NEW LECTURE','НОВАЯ ЛЕКЦЫЯ','新课程','NEUE VORLESUNG','NUEVA CLASE']
-    ,['Загрузите видео или вставьте ссылку — остальное мы сделаем сами.','Upload a video or paste a link — we’ll take care of the rest.','Загрузіце відэа або ўстаўце спасылку — астатняе мы зробім самі.','上传视频或粘贴链接，其余交给我们。','Lade ein Video hoch oder füge einen Link ein — wir kümmern uns um den Rest.','Sube un vídeo o pega un enlace; nosotros nos encargamos del resto.']
-    ,['· MP4, WebM · до 500 МБ','· MP4, WebM · up to 500 MB','· MP4, WebM · да 500 МБ','· MP4、WebM · 最大 500 MB','· MP4, WebM · bis zu 500 MB','· MP4, WebM · hasta 500 MB']
-    ,['До 2160p · 4K','Up to 2160p · 4K','Да 2160p · 4K','最高 2160p · 4K','Bis zu 2160p · 4K','Hasta 2160p · 4K']
-    ,['До 1440p','Up to 1440p','Да 1440p','最高 1440p','Bis zu 1440p','Hasta 1440p']
-    ,['До 1080p · Full HD','Up to 1080p · Full HD','Да 1080p · Full HD','最高 1080p · Full HD','Bis zu 1080p · Full HD','Hasta 1080p · Full HD']
-    ,['До 720p · HD','Up to 720p · HD','Да 720p · HD','最高 720p · HD','Bis zu 720p · HD','Hasta 720p · HD']
-    ,['До 480p','Up to 480p','Да 480p','最高 480p','Bis zu 480p','Hasta 480p']
-    ,['До 360p','Up to 360p','Да 360p','最高 360p','Bis zu 360p','Hasta 360p']
-    ,['НОВАЯ ПАПКА','NEW FOLDER','НОВАЯ ПАПКА','新建文件夹','NEUER ORDNER','NUEVA CARPETA']
-    ,['У каждой учётной записи своя библиотека. Содержимое хранится в зашифрованном виде.','Each account has its own library. Its contents are stored encrypted.','У кожнага ўліковага запісу свая бібліятэка. Змесціва захоўваецца ў зашыфраваным выглядзе.','每个账户都有自己的资料库，内容经过加密存储。','Jedes Konto hat eine eigene Bibliothek. Die Inhalte werden verschlüsselt gespeichert.','Cada cuenta tiene su propia biblioteca. El contenido se almacena cifrado.']
-    ,['Используя Лекторий, вы принимаете','By using Lectorium, you accept the','Карыстаючыся Лекторыяй, вы прымаеце','使用 Lectorium 即表示您接受','Mit der Nutzung von Lectorium akzeptierst du die','Al usar Lectorium, aceptas las']
-    ,['условия использования','terms of use','умовы выкарыстання','使用条款','Nutzungsbedingungen','condiciones de uso']
-    ,['Пользователь','User','Карыстальнік','用户','Benutzer','Usuario']
-    ,['Личная библиотека лекций','Personal lecture library','Асабістая бібліятэка лекцый','个人课程资料库','Persönliche Vorlesungsbibliothek','Biblioteca personal de clases']
-    ,['БЕЗОПАСНОСТЬ','SECURITY','БЯСПЕКА','安全','SICHERHEIT','SEGURIDAD']
-    ,['Новый пароль','New password','Новы пароль','新密码','Neues Passwort','Nueva contraseña']
-    ,['Подтвердите текущий пароль и задайте новый.','Confirm your current password and choose a new one.','Пацвердзіце бягучы пароль і задайце новы.','确认当前密码并设置新密码。','Bestätige dein aktuelles Passwort und lege ein neues fest.','Confirma tu contraseña actual y elige una nueva.']
-    ,['Текущий пароль','Current password','Бягучы пароль','当前密码','Aktuelles Passwort','Contraseña actual']
-    ,['Сохранить пароль','Save password','Захаваць пароль','保存密码','Passwort speichern','Guardar contraseña']
-    ,['ДОСТУП К АККАУНТУ','ACCOUNT ACCESS','ДОСТУП ДА ЎЛІКОВАГА ЗАПІСУ','账户访问','KONTOZUGANG','ACCESO A LA CUENTA']
-    ,['Задать новый пароль','Set a new password','Задаць новы пароль','设置新密码','Neues Passwort festlegen','Establecer una nueva contraseña']
-    ,['УПРАВЛЕНИЕ СИСТЕМОЙ','SYSTEM MANAGEMENT','КІРАВАННЕ СІСТЭМАЙ','系统管理','SYSTEMVERWALTUNG','GESTIÓN DEL SISTEMA']
-    ,['Загружаем данные…','Loading data…','Загружаем даныя…','正在加载数据…','Daten werden geladen…','Cargando datos…']
-    ,['Авто','Auto','Аўта','自动','Auto','Auto']
-    ,['Светлая','Light','Светлая','浅色','Hell','Claro']
-    ,['Тёмная','Dark','Цёмная','深色','Dunkel','Oscuro']
-    ,['Сменить тему сайта','Change website theme','Змяніць тэму сайта','切换网站主题','Website-Design ändern','Cambiar el tema del sitio']
-    ,['Сменить тему сайта: автоматически','Change website theme: automatic','Змяніць тэму сайта: аўтаматычна','切换网站主题：自动','Website-Design ändern: automatisch','Cambiar el tema del sitio: automático']
-    ,['Сменить тему сайта: светлая','Change website theme: light','Змяніць тэму сайта: светлая','切换网站主题：浅色','Website-Design ändern: hell','Cambiar el tema del sitio: claro']
-    ,['Сменить тему сайта: тёмная','Change website theme: dark','Змяніць тэму сайта: цёмная','切换网站主题：深色','Website-Design ändern: dunkel','Cambiar el tema del sitio: oscuro']
-    ,['Перевести субтитры','Translate subtitles','Перакласці субцітры','翻译字幕','Untertitel übersetzen','Traducir subtítulos']
-    ,['Переводим субтитры…','Translating subtitles…','Перакладаем субцітры…','正在翻译字幕…','Untertitel werden übersetzt…','Traduciendo subtítulos…']
-    ,['Субтитры переведены','Subtitles translated','Субцітры перакладзены','字幕已翻译','Untertitel übersetzt','Subtítulos traducidos']
-    ,['Не удалось перевести субтитры','Subtitle translation failed','Не ўдалося перакласці субцітры','字幕翻译失败','Untertitel konnten nicht übersetzt werden','No se pudieron traducir los subtítulos']
-    ,['Не удалось перевести эту часть лекции. Повторите попытку.','Could not translate this part of the lecture. Please try again.','Не ўдалося перакласці гэтую частку лекцыі. Паспрабуйце яшчэ раз.','无法翻译本段课程，请重试。','Dieser Teil der Vorlesung konnte nicht übersetzt werden. Bitte erneut versuchen.','No se pudo traducir esta parte de la clase. Inténtalo de nuevo.']
-    ,['Перевод занял слишком много времени. Повторите попытку.','Translation took too long. Please try again.','Пераклад заняў занадта шмат часу. Паспрабуйце яшчэ раз.','翻译耗时过长，请重试。','Die Übersetzung hat zu lange gedauert. Bitte erneut versuchen.','La traducción tardó demasiado. Inténtalo de nuevo.']
-    ,['Язык перевода','Translation language','Мова перакладу','翻译语言','Übersetzungssprache','Idioma de traducción']
-    ,['Авто','Auto','Аўта','自动','Auto','Auto']
-    ,['Светлая','Light','Светлая','浅色','Hell','Claro']
-    ,['Тёмная','Dark','Цёмная','深色','Dunkel','Oscuro']
-    ,['Перевод','Translation','Пераклад','翻译','Übersetzung','Traducción']
-    ,['Сменить тему сайта: автоматически','Change website theme: automatic','Змяніць тэму сайта: аўтаматычна','切换网站主题：自动','Website-Design ändern: automatisch','Cambiar el tema del sitio: automático']
-    ,['Автоматически','Automatic','Аўтаматычна','自动','Automatisch','Automático']
-    ,['ЛОКАЛЬНАЯ ДЕМОНСТРАЦИЯ · РАБОТАЕТ БЕЗ ИНТЕРНЕТА','OFFLINE DEMO · WORKS WITHOUT INTERNET','АФЛАЙН-ДЭМАНСТРАЦЫЯ · ПРАЦУЕ БЕЗ ІНТЭРНЭТУ','离线演示 · 无需互联网','OFFLINE-DEMO · FUNKTIONIERT OHNE INTERNET','DEMO SIN CONEXIÓN · FUNCIONA SIN INTERNET']
-    ,['БИБЛИОТЕКА','LIBRARY','БІБЛІЯТЭКА','资料库','BIBLIOTHEK','BIBLIOTECA']
-    ,['Все лекции','All lectures','Усе лекцыі','所有课程','Alle Vorlesungen','Todas las clases']
-    ,['Создать папку','Create folder','Стварыць папку','新建文件夹','Ordner erstellen','Crear carpeta']
-    ,['Офлайн-стенд','Offline demo','Афлайн-стэнд','离线演示','Offline-Demo','Demo sin conexión']
-    ,['Данные примера в комплекте','Sample data included','Прыкладныя даныя ў камплекце','包含示例数据','Beispieldaten enthalten','Datos de ejemplo incluidos']
-    ,['Как устроен проект','How it works','Як працуе праект','项目介绍','So funktioniert es','Cómo funciona']
-    ,['Добавить лекцию','Add a lecture','Дадаць лекцыю','添加课程','Vorlesung hinzufügen','Añadir clase']
-    ,['Философия','Philosophy','Філасофія','哲学','Philosophie','Filosofía']
-    ,['ГОТОВА','READY','ГОТАВА','已完成','FERTIG','LISTA']
-    ,['Открыть лекцию','Open lecture','Адкрыць лекцыю','打开课程','Vorlesung öffnen','Abrir clase']
-    ,['Транскрипт','Transcript','Расшыфроўка','转录文本','Transkript','Transcripción']
-    ,['Главы','Chapters','Раздзелы','章节','Kapitel','Capítulos']
-    ,['Переместить в папку','Move to folder','Перамясціць у папку','移动到文件夹','In Ordner verschieben','Mover a carpeta']
-    ,['Личный кабинет','My account','Асабісты кабінет','个人账户','Mein Konto','Mi cuenta']
-    ,['В каждой лекции','Every lecture has','У кожнай лекцыі ёсць','每堂课中都有','Jede Vorlesung hat','Cada clase tiene']
-    ,['ответ.','answer.','адказ.','答案。','eine Antwort.','una respuesta.']
-    ,['Ищите идеи и объяснения, а не отдельные слова.','Search for ideas and explanations, not single words.','Шукайце ідэі і тлумачэнні, а не асобныя словы.','搜索观点和解释，而不只是单个词。','Suche nach Ideen und Erklärungen, nicht nach einzelnen Wörtern.','Busca ideas y explicaciones, no solo palabras sueltas.']
-    ,['Демо показывает, как устроен путь от видео до знаний.','See how a video becomes searchable knowledge.','Дэма паказвае шлях ад відэа да ведаў.','查看视频如何转化为可搜索的知识。','Die Demo zeigt, wie aus Videos durchsuchbares Wissen wird.','La demo muestra cómo convertir vídeos en conocimiento consultable.']
-    ,['ЛОКАЛЬНЫЙ ПОИСК ПО ТЕКСТУ','LOCAL TEXT SEARCH','ЛАКАЛЬНЫ ПОШУК ПА ТЭКСЦЕ','本地文本搜索','LOKALE TEXTSUCHE','BÚSQUEDA LOCAL DE TEXTO']
-    ,['Например: как Кант объясняет опыт?','For example: how does Kant explain experience?','Напрыклад: як Кант тлумачыць досвед?','例如：康德如何解释经验？','Zum Beispiel: Wie erklärt Kant Erfahrung?','Por ejemplo: ¿cómo explica Kant la experiencia?']
-    ,['Примеры: Кант · опыт · время','Examples: Kant · experience · time','Прыклады: Кант · досвед · час','示例：康德 · 经验 · 时间','Beispiele: Kant · Erfahrung · Zeit','Ejemplos: Kant · experiencia · tiempo']
-    ,['ПРИМЕР ДЛЯ ПОКАЗА','DEMO EXAMPLE','ПРЫКЛАД ДЛЯ ДЭМАНСТРАЦЫІ','演示示例','DEMO-BEISPIEL','EJEMPLO DE DEMOSTRACIÓN']
-    ,['ЧТО ПРОИСХОДИТ','HOW IT WORKS','ЯК ГЭТА ПРАЦУЕ','工作原理','SO FUNKTIONIERT ES','CÓMO FUNCIONA']
-    ,['От видео — к понятным моментам','From video to useful moments','Ад відэа — да важных момантаў','从视频到关键片段','Vom Video zu wichtigen Momenten','Del vídeo a los momentos clave']
-    ,['Загрузка','Upload','Загрузка','上传','Hochladen','Carga']
-    ,['Распознавание','Transcription','Распазнаванне','语音识别','Transkription','Transcripción']
-    ,['Навигация','Navigation','Навігацыя','导航','Navigation','Navegación']
-    ,['В рабочей версии добавляют видеофайл или ссылку на видео.','In the online version, add a video file or link.','У анлайн-версіі можна дадаць відэафайл або спасылку.','在线版支持添加视频文件或链接。','In der Online-Version lassen sich Videodateien oder Links hinzufügen.','En la versión online puedes añadir un archivo o enlace de vídeo.']
-    ,['Для русской речи используется GigaAM-v3; английская, белорусская, китайская, немецкая и испанская распознаются мультиязычной моделью. Расшифровка сохраняется с таймкодами.','Russian speech uses GigaAM-v3; English, Belarusian, Chinese, German and Spanish use a multilingual model. The transcript keeps timestamps.','Для рускай мовы выкарыстоўваецца GigaAM-v3; для англійскай, беларускай, кітайскай, нямецкай і іспанскай — шматмоўная мадэль. Расшыфроўка захоўвае таймкоды.','俄语语音使用 GigaAM-v3；英语、白俄罗斯语、中文、德语和西班牙语使用多语言模型。转录保留时间戳。','Für Russisch kommt GigaAM-v3 zum Einsatz; Englisch, Belarussisch, Chinesisch, Deutsch und Spanisch werden mit einem mehrsprachigen Modell erkannt. Das Transkript enthält Zeitmarken.','Para ruso se usa GigaAM-v3; inglés, bielorruso, chino, alemán y español utilizan un modelo multilingüe. La transcripción conserva las marcas de tiempo.']
-    ,['Транскрипт, тематические главы и смысловой поиск помогают быстро найти нужный эпизод.','The transcript, topic chapters and semantic search help you find the right moment.','Расшыфроўка, тэматычныя раздзелы і сэмантычны пошук дапамагаюць хутка знайсці патрэбны момант.','转录文本、主题章节和语义搜索可帮助快速定位片段。','Transkript, Themenkapitel und semantische Suche helfen, passende Stellen schnell zu finden.','La transcripción, los capítulos temáticos y la búsqueda semántica ayudan a encontrar el momento adecuado.']
-    ,['В этой офлайн-демонстрации загрузка выключена. Обработка видео доступна в основной версии на сервере.','Uploads are disabled in this offline demo. Video processing is available in the hosted version.','У гэтай афлайн-дэманстрацыі загрузка адключана. Апрацоўка відэа даступная ў анлайн-версіі.','此离线演示不支持上传。视频处理请使用在线版本。','In dieser Offline-Demo sind Uploads deaktiviert. Die Videoverarbeitung ist in der Online-Version verfügbar.','Las cargas están desactivadas en esta demo sin conexión. El procesamiento está disponible en la versión online.']
-    ,['В этой папке нет лекций.','This folder has no lectures.','У гэтай папцы няма лекцый.','此文件夹中没有课程。','Dieser Ordner enthält keine Vorlesungen.','Esta carpeta no tiene clases.']
-    ,['Перевод субтитров требует серверной модели и доступен в основной версии сайта.','Subtitle translation requires the hosted translation model and is available on the main website.','Для перакладу субцітраў патрэбна серверная мадэль; функцыя даступная ў асноўнай версіі сайта.','字幕翻译需要服务器模型，请使用正式网站。','Die Untertitelübersetzung benötigt das Servermodell und ist auf der Hauptwebsite verfügbar.','La traducción de subtítulos requiere el modelo del servidor y está disponible en el sitio principal.']
-    ,['Краткий конспект','Short summary','Кароткі канспект','简短摘要','Kurze Zusammenfassung','Resumen breve']
-    ,['Аватар','Avatar','Аватар','头像','Avatar','Avatar']
-    ,['Без папки','No folder','Без папкі','未分类','Ohne Ordner','Sin carpeta']
-    ,['Проверьте подключение и попробуйте ещё раз.','Check your connection and try again.','Праверце злучэнне і паспрабуйце яшчэ раз.','请检查网络连接后重试。','Prüfe deine Verbindung und versuche es erneut.','Comprueba la conexión e inténtalo de nuevo.']
-    ,['Очередь обработки','Processing queue','Чарга апрацоўкі','处理队列','Verarbeitungswarteschlange','Cola de procesamiento']
-    ,['Лекция принята','Lecture queued','Лекцыя прынята','课程已加入队列','Vorlesung eingereiht','Clase en cola']
-    ,['Обрабатываем лекцию','Processing lecture','Апрацоўваем лекцыю','正在处理课程','Vorlesung wird verarbeitet','Procesando la clase']
-    ,['Разделы появятся после обработки.','Chapters will appear after processing.','Раздзелы будуць пасля апрацоўкі.','处理后将显示章节。','Kapitel erscheinen nach der Verarbeitung.','Los capítulos aparecerán al terminar el procesamiento.']
-    ,['Конспект появится после обработки.','A summary will appear after processing.','Канспект будзе пасля апрацоўкі.','处理后将显示摘要。','Eine Zusammenfassung erscheint nach der Verarbeitung.','El resumen aparecerá al terminar el procesamiento.']
+    ['БИБЛИОТЕКА','LIBRARY','图书馆','BIBLIOTHEK','BIBLIOTECA'],
+    ['Все лекции','All lectures','所有课程','Alle Vorlesungen','Todas las clases'],
+    ['Свернуть меню','Collapse menu','收起菜单','Menü einklappen','Contraer menú'],
+    ['Развернуть меню','Expand menu','展开菜单','Menü ausklappen','Expandir menú'],
+    ['Как устроен проект','How it works','项目介绍','So funktioniert das Projekt','Cómo funciona'],
+    ['Например, Введение в машинное обучение','For example, Introduction to machine learning','例如：机器学习导论','Zum Beispiel: Einführung in maschinelles Lernen','Por ejemplo: Introducción al aprendizaje automático'],
+    ['Поддерживаются YouTube, VK Видео, Rutube и многие платформы yt-dlp. Доступные разрешения зависят от ролика.','YouTube, VK Video, Rutube and many yt-dlp platforms are supported. Available resolutions depend on the video.','支持 YouTube、VK Video、Rutube 和许多 yt-dlp 平台。可用清晰度取决于视频。','YouTube, VK Video, Rutube und viele yt-dlp-Plattformen werden unterstützt. Die verfügbaren Auflösungen hängen vom Video ab.','Se admiten YouTube, VK Video, Rutube y muchas plataformas de yt-dlp. La resolución disponible depende del vídeo.'],
+    ['Переместить в папку','Move to folder','移动到文件夹','In Ordner verschieben','Mover a carpeta'],
+    ['С начала','From the beginning','从头开始','Von Anfang an','Desde el principio'],
+    ['ГОТОВА','READY','已就绪','BEREIT','LISTA'],
+    ['ОШИБКА','ERROR','错误','FEHLER','ERROR'],
+    ['ОБРАБОТКА','PROCESSING','处理中','IN BEARBEITUNG','PROCESANDO'],
+    ['ГОТОВИТСЯ','QUEUED','排队中','IN WARTESCHLANGE','EN COLA'],
+    ['лучшее доступное','best available','最佳可用','beste verfügbare','la mejor disponible'],
+    ['Краткий конспект','Short notes','简要笔记','Kurze Notizen','Apuntes breves'],
+    ['Краткий пересказ','Short summary','简短摘要','Kurze Zusammenfassung','Resumen breve'],
+    ['Загружаем транскрипт…','Loading transcript…','正在加载转录文本…','Transkript wird geladen…','Cargando transcripción…'],
+    ['Разделы появятся после обработки.','Chapters will appear after processing.','处理完成后将显示章节。','Kapitel erscheinen nach der Verarbeitung.','Los capítulos aparecerán al terminar el procesamiento.'],
+    ['Разделы не найдены.','No chapters found.','未找到章节。','Keine Kapitel gefunden.','No se encontraron capítulos.'],
+    ['Составляем…','Creating…','正在生成…','Wird erstellt…','Creando…'],
+    ['Готово','Done','完成','Fertig','Listo'],
+    ['Сохраняем…','Saving…','正在保存…','Wird gespeichert…','Guardando…'],
+    ['Аватар сохранён','Avatar saved','头像已保存','Avatar gespeichert','Avatar guardado'],
+    ['Лекция не найдена','Lecture not found','未找到课程','Vorlesung nicht gefunden','Clase no encontrada'],
+    ['Лекция по ссылке','Lecture from link','链接课程','Vorlesung über Link','Clase desde enlace'],
+    ['Загрузка модели распознавания','Loading speech model','正在加载语音识别模型','Spracherkennungsmodell wird geladen','Cargando el modelo de voz']
+    ,['НОВАЯ ЛЕКЦИЯ','NEW LECTURE','新课程','NEUE VORLESUNG','NUEVA CLASE']
+    ,['Загрузите видео или вставьте ссылку — остальное мы сделаем сами.','Upload a video or paste a link — we’ll take care of the rest.','上传视频或粘贴链接，其余交给我们。','Lade ein Video hoch oder füge einen Link ein — wir kümmern uns um den Rest.','Sube un vídeo o pega un enlace; nosotros nos encargamos del resto.']
+    ,['· MP4, WebM · до 500 МБ','· MP4, WebM · up to 500 MB','· MP4、WebM · 最大 500 MB','· MP4, WebM · bis zu 500 MB','· MP4, WebM · hasta 500 MB']
+    ,['До 2160p · 4K','Up to 2160p · 4K','最高 2160p · 4K','Bis zu 2160p · 4K','Hasta 2160p · 4K']
+    ,['До 1440p','Up to 1440p','最高 1440p','Bis zu 1440p','Hasta 1440p']
+    ,['До 1080p · Full HD','Up to 1080p · Full HD','最高 1080p · Full HD','Bis zu 1080p · Full HD','Hasta 1080p · Full HD']
+    ,['До 720p · HD','Up to 720p · HD','最高 720p · HD','Bis zu 720p · HD','Hasta 720p · HD']
+    ,['До 480p','Up to 480p','最高 480p','Bis zu 480p','Hasta 480p']
+    ,['До 360p','Up to 360p','最高 360p','Bis zu 360p','Hasta 360p']
+    ,['НОВАЯ ПАПКА','NEW FOLDER','新建文件夹','NEUER ORDNER','NUEVA CARPETA']
+    ,['У каждой учётной записи своя библиотека. Содержимое хранится в зашифрованном виде.','Each account has its own library. Its contents are stored encrypted.','每个账户都有自己的资料库，内容经过加密存储。','Jedes Konto hat eine eigene Bibliothek. Die Inhalte werden verschlüsselt gespeichert.','Cada cuenta tiene su propia biblioteca. El contenido se almacena cifrado.']
+    ,['Используя Лекторий, вы принимаете','By using Lectorium, you accept the','使用 Lectorium 即表示您接受','Mit der Nutzung von Lectorium akzeptierst du die','Al usar Lectorium, aceptas las']
+    ,['условия использования','terms of use','使用条款','Nutzungsbedingungen','condiciones de uso']
+    ,['Пользователь','User','用户','Benutzer','Usuario']
+    ,['Личная библиотека лекций','Personal lecture library','个人课程资料库','Persönliche Vorlesungsbibliothek','Biblioteca personal de clases']
+    ,['БЕЗОПАСНОСТЬ','SECURITY','安全','SICHERHEIT','SEGURIDAD']
+    ,['Новый пароль','New password','新密码','Neues Passwort','Nueva contraseña']
+    ,['Подтвердите текущий пароль и задайте новый.','Confirm your current password and choose a new one.','确认当前密码并设置新密码。','Bestätige dein aktuelles Passwort und lege ein neues fest.','Confirma tu contraseña actual y elige una nueva.']
+    ,['Текущий пароль','Current password','当前密码','Aktuelles Passwort','Contraseña actual']
+    ,['Сохранить пароль','Save password','保存密码','Passwort speichern','Guardar contraseña']
+    ,['ДОСТУП К АККАУНТУ','ACCOUNT ACCESS','账户访问','KONTOZUGANG','ACCESO A LA CUENTA']
+    ,['Задать новый пароль','Set a new password','设置新密码','Neues Passwort festlegen','Establecer una nueva contraseña']
+    ,['УПРАВЛЕНИЕ СИСТЕМОЙ','SYSTEM MANAGEMENT','系统管理','SYSTEMVERWALTUNG','GESTIÓN DEL SISTEMA']
+    ,['Загружаем данные…','Loading data…','正在加载数据…','Daten werden geladen…','Cargando datos…']
+    ,['Авто','Auto','自动','Auto','Auto']
+    ,['Светлая','Light','浅色','Hell','Claro']
+    ,['Тёмная','Dark','深色','Dunkel','Oscuro']
+    ,['Сменить тему сайта','Change website theme','切换网站主题','Website-Design ändern','Cambiar el tema del sitio']
+    ,['Сменить тему сайта: автоматически','Change website theme: automatic','切换网站主题：自动','Website-Design ändern: automatisch','Cambiar el tema del sitio: automático']
+    ,['Сменить тему сайта: светлая','Change website theme: light','切换网站主题：浅色','Website-Design ändern: hell','Cambiar el tema del sitio: claro']
+    ,['Сменить тему сайта: тёмная','Change website theme: dark','切换网站主题：深色','Website-Design ändern: dunkel','Cambiar el tema del sitio: oscuro']
+    ,['Перевести субтитры','Translate subtitles','翻译字幕','Untertitel übersetzen','Traducir subtítulos']
+    ,['Переводим субтитры…','Translating subtitles…','正在翻译字幕…','Untertitel werden übersetzt…','Traduciendo subtítulos…']
+    ,['Субтитры переведены','Subtitles translated','字幕已翻译','Untertitel übersetzt','Subtítulos traducidos']
+    ,['Не удалось перевести субтитры','Subtitle translation failed','字幕翻译失败','Untertitel konnten nicht übersetzt werden','No se pudieron traducir los subtítulos']
+    ,['Не удалось перевести эту часть лекции. Повторите попытку.','Could not translate this part of the lecture. Please try again.','无法翻译本段课程，请重试。','Dieser Teil der Vorlesung konnte nicht übersetzt werden. Bitte erneut versuchen.','No se pudo traducir esta parte de la clase. Inténtalo de nuevo.']
+    ,['Перевод занял слишком много времени. Повторите попытку.','Translation took too long. Please try again.','翻译耗时过长，请重试。','Die Übersetzung hat zu lange gedauert. Bitte erneut versuchen.','La traducción tardó demasiado. Inténtalo de nuevo.']
+    ,['Язык перевода','Translation language','翻译语言','Übersetzungssprache','Idioma de traducción']
+    ,['Авто','Auto','自动','Auto','Auto']
+    ,['Светлая','Light','浅色','Hell','Claro']
+    ,['Тёмная','Dark','深色','Dunkel','Oscuro']
+    ,['Перевод','Translation','翻译','Übersetzung','Traducción']
+    ,['Сменить тему сайта: автоматически','Change website theme: automatic','切换网站主题：自动','Website-Design ändern: automatisch','Cambiar el tema del sitio: automático']
+    ,['Автоматически','Automatic','自动','Automatisch','Automático']
+    ,['ЛОКАЛЬНАЯ ДЕМОНСТРАЦИЯ · РАБОТАЕТ БЕЗ ИНТЕРНЕТА','OFFLINE DEMO · WORKS WITHOUT INTERNET','离线演示 · 无需互联网','OFFLINE-DEMO · FUNKTIONIERT OHNE INTERNET','DEMO SIN CONEXIÓN · FUNCIONA SIN INTERNET']
+    ,['БИБЛИОТЕКА','LIBRARY','资料库','BIBLIOTHEK','BIBLIOTECA']
+    ,['Все лекции','All lectures','所有课程','Alle Vorlesungen','Todas las clases']
+    ,['Создать папку','Create folder','新建文件夹','Ordner erstellen','Crear carpeta']
+    ,['Офлайн-стенд','Offline demo','离线演示','Offline-Demo','Demo sin conexión']
+    ,['Данные примера в комплекте','Sample data included','包含示例数据','Beispieldaten enthalten','Datos de ejemplo incluidos']
+    ,['Как устроен проект','How it works','项目介绍','So funktioniert es','Cómo funciona']
+    ,['Добавить лекцию','Add a lecture','添加课程','Vorlesung hinzufügen','Añadir clase']
+    ,['Философия','Philosophy','哲学','Philosophie','Filosofía']
+    ,['ГОТОВА','READY','已完成','FERTIG','LISTA']
+    ,['Открыть лекцию','Open lecture','打开课程','Vorlesung öffnen','Abrir clase']
+    ,['Транскрипт','Transcript','转录文本','Transkript','Transcripción']
+    ,['Главы','Chapters','章节','Kapitel','Capítulos']
+    ,['Переместить в папку','Move to folder','移动到文件夹','In Ordner verschieben','Mover a carpeta']
+    ,['Личный кабинет','My account','个人账户','Mein Konto','Mi cuenta']
+    ,['В каждой лекции','Every lecture has','每堂课中都有','Jede Vorlesung hat','Cada clase tiene']
+    ,['ответ.','answer.','答案。','eine Antwort.','una respuesta.']
+    ,['Ищите идеи и объяснения, а не отдельные слова.','Search for ideas and explanations, not single words.','搜索观点和解释，而不只是单个词。','Suche nach Ideen und Erklärungen, nicht nach einzelnen Wörtern.','Busca ideas y explicaciones, no solo palabras sueltas.']
+    ,['Демо показывает, как устроен путь от видео до знаний.','See how a video becomes searchable knowledge.','查看视频如何转化为可搜索的知识。','Die Demo zeigt, wie aus Videos durchsuchbares Wissen wird.','La demo muestra cómo convertir vídeos en conocimiento consultable.']
+    ,['ЛОКАЛЬНЫЙ ПОИСК ПО ТЕКСТУ','LOCAL TEXT SEARCH','本地文本搜索','LOKALE TEXTSUCHE','BÚSQUEDA LOCAL DE TEXTO']
+    ,['Например: как Кант объясняет опыт?','For example: how does Kant explain experience?','例如：康德如何解释经验？','Zum Beispiel: Wie erklärt Kant Erfahrung?','Por ejemplo: ¿cómo explica Kant la experiencia?']
+    ,['Примеры: Кант · опыт · время','Examples: Kant · experience · time','示例：康德 · 经验 · 时间','Beispiele: Kant · Erfahrung · Zeit','Ejemplos: Kant · experiencia · tiempo']
+    ,['ПРИМЕР ДЛЯ ПОКАЗА','DEMO EXAMPLE','演示示例','DEMO-BEISPIEL','EJEMPLO DE DEMOSTRACIÓN']
+    ,['ЧТО ПРОИСХОДИТ','HOW IT WORKS','工作原理','SO FUNKTIONIERT ES','CÓMO FUNCIONA']
+    ,['От видео — к понятным моментам','From video to useful moments','从视频到关键片段','Vom Video zu wichtigen Momenten','Del vídeo a los momentos clave']
+    ,['Загрузка','Upload','上传','Hochladen','Carga']
+    ,['Распознавание','Transcription','语音识别','Transkription','Transcripción']
+    ,['Навигация','Navigation','导航','Navigation','Navegación']
+    ,['В рабочей версии добавляют видеофайл или ссылку на видео.','In the online version, add a video file or link.','在线版支持添加视频文件或链接。','In der Online-Version lassen sich Videodateien oder Links hinzufügen.','En la versión online puedes añadir un archivo o enlace de vídeo.']
+    ,['Для русской речи используется GigaAM-v3; английская, китайская, немецкая и испанская распознаются мультиязычной моделью. Язык можно определить автоматически, расшифровка сохраняет таймкоды.','Russian speech uses GigaAM-v3; English, Chinese, German and Spanish use a multilingual model. The video language can be detected automatically, and transcripts keep timestamps.','俄语语音使用 GigaAM-v3；英语、中文、德语和西班牙语使用多语言模型。系统可自动识别视频语言，转录保留时间戳。','Für Russisch kommt GigaAM-v3 zum Einsatz; Englisch, Chinesisch, Deutsch und Spanisch werden mit einem mehrsprachigen Modell erkannt. Die Videosprache lässt sich automatisch erkennen; das Transkript enthält Zeitmarken.','Para ruso se usa GigaAM-v3; inglés, chino, alemán y español utilizan un modelo multilingüe. El idioma del vídeo se detecta automáticamente y la transcripción conserva las marcas de tiempo.']
+    ,['Транскрипт, тематические главы и смысловой поиск помогают быстро найти нужный эпизод.','The transcript, topic chapters and semantic search help you find the right moment.','转录文本、主题章节和语义搜索可帮助快速定位片段。','Transkript, Themenkapitel und semantische Suche helfen, passende Stellen schnell zu finden.','La transcripción, los capítulos temáticos y la búsqueda semántica ayudan a encontrar el momento adecuado.']
+    ,['В этой офлайн-демонстрации загрузка выключена. Обработка видео доступна в основной версии на сервере.','Uploads are disabled in this offline demo. Video processing is available in the hosted version.','此离线演示不支持上传。视频处理请使用在线版本。','In dieser Offline-Demo sind Uploads deaktiviert. Die Videoverarbeitung ist in der Online-Version verfügbar.','Las cargas están desactivadas en esta demo sin conexión. El procesamiento está disponible en la versión online.']
+    ,['В этой папке нет лекций.','This folder has no lectures.','此文件夹中没有课程。','Dieser Ordner enthält keine Vorlesungen.','Esta carpeta no tiene clases.']
+    ,['Перевод субтитров требует серверной модели и доступен в основной версии сайта.','Subtitle translation requires the hosted translation model and is available on the main website.','字幕翻译需要服务器模型，请使用正式网站。','Die Untertitelübersetzung benötigt das Servermodell und ist auf der Hauptwebsite verfügbar.','La traducción de subtítulos requiere el modelo del servidor y está disponible en el sitio principal.']
+    ,['Краткий конспект','Short summary','简短摘要','Kurze Zusammenfassung','Resumen breve']
+    ,['Аватар','Avatar','头像','Avatar','Avatar']
+    ,['Без папки','No folder','未分类','Ohne Ordner','Sin carpeta']
+    ,['Проверьте подключение и попробуйте ещё раз.','Check your connection and try again.','请检查网络连接后重试。','Prüfe deine Verbindung und versuche es erneut.','Comprueba la conexión e inténtalo de nuevo.']
+    ,['Очередь обработки','Processing queue','处理队列','Verarbeitungswarteschlange','Cola de procesamiento']
+    ,['Лекция принята','Lecture queued','课程已加入队列','Vorlesung eingereiht','Clase en cola']
+    ,['Обрабатываем лекцию','Processing lecture','正在处理课程','Vorlesung wird verarbeitet','Procesando la clase']
+    ,['Разделы появятся после обработки.','Chapters will appear after processing.','处理后将显示章节。','Kapitel erscheinen nach der Verarbeitung.','Los capítulos aparecerán al terminar el procesamiento.']
+    ,['Конспект появится после обработки.','A summary will appear after processing.','处理后将显示摘要。','Eine Zusammenfassung erscheint nach der Verarbeitung.','El resumen aparecerá al terminar el procesamiento.']
+    ,['Автоопределение языка','Automatic language detection','自动检测语言','Automatische Spracherkennung','Detección automática del idioma']
+    ,['🌐 Автоопределение языка','🌐 Automatic language detection','🌐 自动检测语言','🌐 Sprache automatisch erkennen','🌐 Detección automática del idioma']
+    ,['По умолчанию язык определяется по речи в видео. Интерфейс настраивается отдельно.','The video language is detected automatically by default. The interface language is set separately.','默认会自动识别视频语言。界面语言可单独设置。','Die Videosprache wird standardmäßig automatisch erkannt. Die Oberflächensprache wird separat eingestellt.','El idioma del vídeo se detecta automáticamente. El idioma de la interfaz se configura por separado.']
   ];
-  const localesOrder=['ru','en','be','zh','de','es'];
-  for(const row of extraRows)for(let index=0;index<localesOrder.length;index++)locales[localesOrder[index]][row[0]]=row[index];
+  const localesOrder=['ru','en','zh','de','es'];
+  for(const row of extraRows)for(let index=0;index<localesOrder.length;index++)if(localesOrder[index])locales[localesOrder[index]][row[0]]=row[index];
   for(const locale of Object.keys(locales))locales[locale]=Object.fromEntries(Object.entries(locales[locale]).map(([key,value])=>[normalize(key),value]));
   const pageTitles=document.querySelector('.offline-banner')
-    ?{ru:'Лекторий — локальная демонстрация',en:'Lectorium — offline demo',be:'Лекторыя — афлайн-дэманстрацыя',zh:'Lectorium — 离线演示',de:'Lectorium — Offline-Demo',es:'Lectorium — demo sin conexión'}
-    :{ru:'Лекторий — поиск по смыслу',en:'Lectorium — semantic lecture search',be:'Лекторыя — сэмантычны пошук лекцый',zh:'Lectorium — 课程语义搜索',de:'Lectorium — semantische Vorlesungssuche',es:'Lectorium — búsqueda semántica en clases'};
+    ?{ru:'Лекторий — локальная демонстрация',en:'Lectorium — offline demo',zh:'Lectorium — 离线演示',de:'Lectorium — Offline-Demo',es:'Lectorium — demo sin conexión'}
+    :{ru:'Лекторий — поиск по смыслу',en:'Lectorium — semantic lecture search',zh:'Lectorium — 课程语义搜索',de:'Lectorium — semantische Vorlesungssuche',es:'Lectorium — búsqueda semántica en clases'};
   const playerLabels={
     ru:['С начала','Назад на {seektime} сек.','Воспроизвести','Пауза','Вперёд на {seektime} сек.','Перемотка','{currentTime} из {duration}','Просмотрено','Загружено','Текущее время','Длительность','Громкость','Выключить звук','Включить звук','Скачать видео','На весь экран','Выйти из полноэкранного режима','Видеоплеер: {title}','Субтитры','Настройки','Картинка в картинке','Назад','Скорость','Обычная','Качество','Повтор','Начало','Конец','Все','Сбросить','Выключено','Включено','Реклама'],
     en:['Restart','Rewind {seektime} seconds','Play','Pause','Forward {seektime} seconds','Seek','{currentTime} of {duration}','Played','Buffered','Current time','Duration','Volume','Mute','Unmute','Download video','Enter fullscreen','Exit fullscreen','Video player: {title}','Captions','Settings','Picture in picture','Back','Speed','Normal','Quality','Loop','Start','End','All','Reset','Disabled','Enabled','Advertisement'],
-    be:['З пачатку','Назад на {seektime} с','Прайграць','Паўза','Наперад на {seektime} с','Перамотка','{currentTime} з {duration}','Прайграна','Загружана','Бягучы час','Працягласць','Гучнасць','Выключыць гук','Уключыць гук','Спампаваць відэа','На ўвесь экран','Выйсці з поўнага экрана','Відэапрайгравальнік: {title}','Субцітры','Налады','Карцінка ў карцінцы','Назад','Хуткасць','Звычайная','Якасць','Паўтор','Пачатак','Канец','Усе','Скінуць','Выключана','Уключана','Рэклама'],
     zh:['重新开始','后退 {seektime} 秒','播放','暂停','快进 {seektime} 秒','定位','{currentTime} / {duration}','已播放','已缓冲','当前时间','时长','音量','静音','取消静音','下载视频','进入全屏','退出全屏','视频播放器：{title}','字幕','设置','画中画','返回','速度','正常','画质','循环','开始','结束','全部','重置','关闭','开启','广告'],
     de:['Neustart','{seektime} Sekunden zurück','Abspielen','Pause','{seektime} Sekunden vor','Suchen','{currentTime} von {duration}','Abgespielt','Gepuffert','Aktuelle Zeit','Dauer','Lautstärke','Stumm','Ton an','Video herunterladen','Vollbild öffnen','Vollbild verlassen','Videoplayer: {title}','Untertitel','Einstellungen','Bild im Bild','Zurück','Geschwindigkeit','Normal','Qualität','Wiederholen','Start','Ende','Alle','Zurücksetzen','Deaktiviert','Aktiviert','Werbung'],
     es:['Reiniciar','Retroceder {seektime} s','Reproducir','Pausa','Avanzar {seektime} s','Buscar','{currentTime} de {duration}','Reproducido','Cargado','Tiempo actual','Duración','Volumen','Silenciar','Activar sonido','Descargar vídeo','Entrar en pantalla completa','Salir de pantalla completa','Reproductor de vídeo: {title}','Subtítulos','Ajustes','Imagen en imagen','Volver','Velocidad','Normal','Calidad','Repetir','Inicio','Fin','Todos','Restablecer','Desactivado','Activado','Anuncio']
@@ -195,7 +194,7 @@
     visit(document.body);
     document.title=pageTitles[locale];
     const headline=document.querySelector('#heroHeadline');
-    if(headline)headline.innerHTML={ru:'В каждой лекции<br>есть <em>ответ.</em>',en:'Every lecture has<br>an <em>answer.</em>',be:'У кожнай лекцыі<br>ёсць <em>адказ.</em>',zh:'每堂课中<br>都有<em>答案。</em>',de:'In jeder Vorlesung<br>steckt eine <em>Antwort.</em>',es:'Cada clase tiene<br>una <em>respuesta.</em>'}[locale];
+    if(headline)headline.innerHTML={ru:'В каждой лекции<br>есть <em>ответ.</em>',en:'Every lecture has<br>an <em>answer.</em>',zh:'每堂课中<br>都有<em>答案。</em>',de:'In jeder Vorlesung<br>steckt eine <em>Antwort.</em>',es:'Cada clase tiene<br>una <em>respuesta.</em>'}[locale];
     writing=false;
     window.dispatchEvent(new CustomEvent('lectorium:language-change',{detail:{locale}}));
   }
