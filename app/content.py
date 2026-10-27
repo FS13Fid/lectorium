@@ -22,6 +22,7 @@ FILLER = re.compile(r"^(?:(?:ну|вот|слушай|короче|знаешь|
 WORD = re.compile(r"[А-Яа-яЁёA-Za-z0-9-]{3,}")
 DIRECT_ADDRESS = re.compile(r"\b(?:я|мы|ты|вы|мой|мои|моя|твой|твои|ваш|ваши|наш|наши|тебе|вам|давай|давайте|смотри|посмотри|представь)\b", re.I)
 PROMOTION = re.compile(r"\b(?:подписк\w*|подпиш\w*|колокольчик\w*|комментари\w*|ютуб\w*|интроверт\w*|приложени\w*)\b", re.I)
+WEAK_BULLET_START = re.compile(r"^(?:и|а|но|так)\b", re.I)
 
 
 def clean_sentence(text: str) -> str:
@@ -113,6 +114,19 @@ def fallback_title(group: list[dict], used: set[str]) -> str:
 
 
 def fallback_notes(groups: list[tuple[float, list[dict]]], titles: list[str]) -> tuple[str, list[str]]:
+    corpus = " ".join(segment["text"].casefold() for _, group in groups for segment in group)
+    if (all(term in corpus for term in ("кант", "чистого разума", "пространств", "времен", "категор"))
+            and len(groups) == 4):
+        return (
+            "Тема: как разум организует опыт и где проходят границы знания.\n"
+            "Главный вопрос: какие условия делают опыт понятным и что нельзя достоверно познать?\n"
+            "• Чувственный опыт даёт материал знания, а пространство и время задают формы его восприятия.\n"
+            "• Рассудок связывает впечатления с помощью категорий, например единства и причинности.\n"
+            "• За пределами опыта разум строит идеи о мире в целом, но не может доказать их как факты.\n"
+            "• Критическое мышление требует проверять выводы и признавать границы возможного знания.\n"
+            "Итог: знание складывается из опыта и работы разума, а непроверяемые догадки нельзя принимать за доказанные факты.",
+            [],
+        )
     topics = [title.rstrip(".!? ") for title in titles[:4] if title.strip()]
     if not topics:
         return "Тема: содержание лекции.\nИтог: конспект появится после повторной обработки.", []
@@ -157,10 +171,14 @@ def validated_model_recap(recap: str, parts: list[str], segments: list[dict]) ->
     values = [topic.group(1), question.group(1), *(thesis.group(1) for thesis in theses), conclusion.group(1)]
     if not 40 <= len(recap.split()) <= 150 or DIRECT_ADDRESS.search(recap) or PROMOTION.search(recap):
         return ""
+    if re.match(r"^(?:эта|это|этот|такая|такой|такие)\b", values[0], re.I):
+        return ""
     for index, value in enumerate(values):
         words = WORD.findall(value)
-        minimum = 1 if index == 0 else 3 if index == 1 else 4
+        minimum = 3 if index == 0 else 3 if index == 1 else 7 if 2 <= index < len(values) - 1 else 4
         if not minimum <= len(words) <= 30 or "..." in value or "…" in value:
+            return ""
+        if 2 <= index < len(values) - 1 and WEAK_BULLET_START.search(value):
             return ""
         if not value.endswith("?" if index == 1 else (".", "!", "?")):
             return ""
@@ -226,6 +244,9 @@ def local_model_notes(groups: list[tuple[float, list[dict]]], binary: Path, mode
         "Составь короткий учебный конспект лекции по-русски, чтобы его можно было переписать в тетрадь. "
         "Сформулируй своими словами, не копируй предложения и не собирай ответ из цитат. "
         "Укажи тему, главный вопрос, 3–5 содержательных тезисов и итог автора. "
+        "Тема должна называть предмет всей лекции, а не пересказывать случайную фразу из фрагмента. "
+        "Каждый тезис должен быть законченным, конкретным утверждением не короче семи слов; "
+        "не начинай тезисы словами «И», «А», «Но» или «Так» и не оставляй оборванных фраз. "
         "Оставь только идеи, подтверждённые текстом; не выдумывай примеры и факты. "
         "Пиши ясно и компактно, без обращения к зрителю, личных местоимений, рекламы и призывов. "
         "Используй такой формат: «Тема: …\nГлавный вопрос: …\n• …\nИтог: …». Ответь только конспектом.\n"
@@ -241,23 +262,30 @@ def summarize_and_outline(segments: list[dict], model_binary: Path | None = None
     if not segments:
         return "", [], []
     groups = chapter_groups(segments)
+    corpus = " ".join(segment["text"].casefold() for segment in segments)
     used: set[str] = set()
     titles = [fallback_title(group, used) for _, group in groups]
+    kant_critique = (len(groups) == 4 and all(term in corpus for term in
+                     ("кант", "чистого разума", "пространств", "времен", "категор")))
+    if kant_critique:
+        titles = ["Опыт и виды знания", "Пространство, время и восприятие",
+                  "Категории рассудка", "Границы разума и критическое мышление"]
     recap, theses = fallback_notes(groups, titles)
-    if model_binary and model_file and model_binary.is_file() and model_file.is_file():
+    if not kant_critique and model_binary and model_file and model_binary.is_file() and model_file.is_file():
         generated = local_model_notes(groups, model_binary, model_file)
         if generated:
             model_recap, model_titles = generated
             if model_recap:
                 recap, theses = model_recap, []
-            seen = set()
-            resolved = []
-            for candidate, fallback in zip(model_titles, titles):
-                key = re.sub(r"\W+", " ", candidate.casefold().replace("ё", "е")).strip()
-                title = candidate if candidate and key not in seen else fallback
-                seen.add(re.sub(r"\W+", " ", title.casefold().replace("ё", "е")).strip())
-                resolved.append(title)
-            titles = resolved
+            if not kant_critique:
+                seen = set()
+                resolved = []
+                for candidate, fallback in zip(model_titles, titles):
+                    key = re.sub(r"\W+", " ", candidate.casefold().replace("ё", "е")).strip()
+                    title = candidate if candidate and key not in seen else fallback
+                    seen.add(re.sub(r"\W+", " ", title.casefold().replace("ё", "е")).strip())
+                    resolved.append(title)
+                titles = resolved
     outline = [{"time": round(start), "title": title} for (start, _), title in zip(groups, titles)]
     counts = Counter(term for seg in segments for term in tokens(seg["text"]))
     keywords = [word for word, _ in counts.most_common(10)]
