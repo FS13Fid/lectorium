@@ -1,0 +1,19 @@
+# © 2026 Синакаев Фидель, Мучкаев Марк, Бутров Трофим, Борисов Никита, Попов Роман. Все права защищены. Исходный код: просмотр жюри для оценки; иное использование — по письменному разрешению правообладателей. Полные условия: LICENSE.
+services:
+  lectorium:
+    build: .
+    container_name: lectorium
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      DATA_DIR: /srv/lectorium/data
+      UPLOAD_DIR: /srv/lectorium/uploads
+      ASR_MODEL: ${ASR_MODEL:-gigaam-v3-e2e-rnnt}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2}
+      APP_USER: ${APP_USER:?Set APP_USER in .env}
+      APP_PASSWORD: ${APP_PASSWORD:?Set APP_PASSWORD in .env}
+      YTDLP_PROXY: ${YTDLP_PROXY:-}
+    volumes:
+      - ./data:/srv/lectorium/data
+      - ./uploads:/srv/lectorium/uploads
