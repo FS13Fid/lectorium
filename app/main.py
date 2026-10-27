@@ -54,6 +54,8 @@ KEY_FILE = Path(os.getenv("STORAGE_KEY_FILE", DATA / "storage.key"))
 MODEL_NAME = os.getenv("EMBEDDING_MODEL", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
 EMBEDDING_CACHE = Path(os.getenv("FASTEMBED_CACHE_PATH", DATA / "fastembed_cache"))
 ASR_MODEL = os.getenv("ASR_MODEL", "gigaam-v3-e2e-rnnt")
+MULTILINGUAL_ASR_MODEL = os.getenv("MULTILINGUAL_ASR_MODEL", "Systran/faster-whisper-base")
+SPEECH_LANGUAGES = {"ru": "Русский", "en": "English", "be": "Беларуская", "zh": "中文", "de": "Deutsch", "es": "Español"}
 os.environ.setdefault("HF_HOME", str(DATA / "hf_cache"))
 
 app = FastAPI(title="Лекторий — семантический поиск по лекциям", version="1.0.0")
@@ -282,6 +284,7 @@ with closing(db()) as con:
         error TEXT, summary TEXT DEFAULT '', outline TEXT DEFAULT '[]',
         keywords TEXT DEFAULT '[]', owner_id TEXT REFERENCES users(id), media_type TEXT DEFAULT 'video/mp4',
         quality TEXT NOT NULL DEFAULT 'best', folder_id TEXT REFERENCES folders(id) ON DELETE SET NULL,
+        speech_language TEXT NOT NULL DEFAULT 'ru',
         progress INTEGER NOT NULL DEFAULT 0,
         stage TEXT NOT NULL DEFAULT 'В очереди', started_at REAL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -322,6 +325,8 @@ with closing(db()) as con:
         con.execute("ALTER TABLE lectures ADD COLUMN speed TEXT")
     if "folder_id" not in lecture_columns:
         con.execute("ALTER TABLE lectures ADD COLUMN folder_id TEXT REFERENCES folders(id) ON DELETE SET NULL")
+    if "speech_language" not in lecture_columns:
+        con.execute("ALTER TABLE lectures ADD COLUMN speech_language TEXT NOT NULL DEFAULT 'ru'")
     con.execute("UPDATE lectures SET status='queued', progress=0, stage='В очереди' WHERE status='processing'")
     con.execute("UPDATE lectures SET progress=100,stage='Готово',eta_seconds=0,speed=NULL WHERE status='ready'")
     con.execute("UPDATE lectures SET stage='Ошибка обработки',eta_seconds=0,speed=NULL WHERE status='error'")
@@ -511,11 +516,11 @@ def media_duration(path: Path) -> float:
         return 0.0
 
 
-def summarize_and_outline(segments: list[dict]) -> tuple[str, list[dict], list[str]]:
+def summarize_and_outline(segments: list[dict], language: str = "ru") -> tuple[str, list[dict], list[str]]:
     from app.content import summarize_and_outline as build_notes
     binary = Path(os.getenv("SUMMARY_BINARY", ROOT / "bin" / "llama-cli"))
     model = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
-    return build_notes(segments, binary, model)
+    return build_notes(segments, binary, model, language=language)
 
 
 def normalize_video_url(value: str) -> str:
@@ -555,11 +560,11 @@ def process_lecture(lecture_id: str, source_file: Path | str, is_link: bool = Fa
             if cancelled.is_set():
                 raise JobCancelled()
             with closing(db()) as con:
-                row = con.execute("SELECT status FROM lectures WHERE id=?", (lecture_id,)).fetchone()
+                row = con.execute("SELECT status,speech_language FROM lectures WHERE id=?", (lecture_id,)).fetchone()
             if not row or row["status"] == "cancelled":
                 raise JobCancelled()
             set_progress(lecture_id, 2, "Подготавливаем задачу", status="processing")
-            _process_lecture_job(lecture_id, source_file, is_link, quality, cancelled)
+            _process_lecture_job(lecture_id, source_file, is_link, quality, cancelled, row["speech_language"] or "ru")
     except JobCancelled:
         set_status(lecture_id, "cancelled")
     finally:
@@ -641,7 +646,7 @@ def parse_download_line(line: str) -> tuple[float | None, str | None, str | None
     return pct, speed_ru, total_ru, eta_sec, downloaded_ru
 
 
-def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool = False, quality: str = "best", cancelled: threading.Event | None = None):
+def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool = False, quality: str = "best", cancelled: threading.Event | None = None, speech_language: str = "ru"):
     work = WORK / lecture_id
     work.mkdir(parents=True, exist_ok=True)
     local_media = None if is_link else Path(source_file)
@@ -729,20 +734,33 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
         if ffmpeg.returncode:
             raise subprocess.CalledProcessError(ffmpeg.returncode, "ffmpeg", output=ffmpeg_out, stderr=ffmpeg_err)
         duration = media_duration(local_media)
-        set_progress(lecture_id, 47, "Загружаем GigaAM для русской речи")
-        from stt_ru import Transcriber
-        from stt_ru.audio import Audio
-        from stt_ru.vad import VadOptions
-        model = Transcriber(model=ASR_MODEL, quantization="int8", split_channels=False,
-                            vad=VadOptions(min_silence_duration_ms=300, speech_pad_ms=100))
-        set_progress(lecture_id, 50, "Распознаём русскую речь")
+        speech_name = SPEECH_LANGUAGES.get(speech_language, SPEECH_LANGUAGES["ru"])
+        model = None
+        if speech_language == "ru":
+            set_progress(lecture_id, 47, "Загружаем GigaAM для русской речи")
+            from stt_ru import Transcriber
+            from stt_ru.audio import Audio
+            from stt_ru.vad import VadOptions
+            model = Transcriber(model=ASR_MODEL, quantization="int8", split_channels=False,
+                                vad=VadOptions(min_silence_duration_ms=300, speech_pad_ms=100))
+        else:
+            set_progress(lecture_id, 47, f"Загружаем мультиязычную модель речи · {speech_name}")
+            from faster_whisper import WhisperModel
+            model = WhisperModel(MULTILINGUAL_ASR_MODEL, device="cpu", compute_type="int8",
+                                 cpu_threads=max(1, int(os.getenv("ASR_CPU_THREADS", "2"))), num_workers=1)
+        set_progress(lecture_id, 50, f"Распознаём речь · {speech_name}")
         transcript = []
         transcribe_start = time.time()
         for offset, chunk_end, samples, rate in audio_chunks(audio):
             if cancelled and cancelled.is_set():
                 raise JobCancelled()
-            result = model.transcribe_audio(Audio(samples, rate))
-            for segment in result.segments:
+            if speech_language == "ru":
+                result = model.transcribe_audio(Audio(samples, rate))
+                recognized = result.segments
+            else:
+                recognized, _ = model.transcribe(samples.reshape(-1), language=speech_language,
+                    beam_size=5, vad_filter=False, condition_on_previous_text=False)
+            for segment in recognized:
                 text = re.sub(r"\s+", " ", segment.text).strip()
                 if text:
                     start = max(0.0, offset + float(segment.start))
@@ -752,7 +770,7 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
             audio_pct = min(100, int(audio_done / max(1, duration) * 100))
             rate_ratio = audio_done / elapsed
             eta = max(1, int(max(0, duration - audio_done) / max(.1, rate_ratio)))
-            stage = f"Распознаём русскую речь · {audio_pct}% ({int(audio_done // 60)} из {int(duration // 60)} мин.)"
+            stage = f"Распознаём речь · {speech_name} · {audio_pct}% ({int(audio_done // 60)} из {int(duration // 60)} мин.)"
             set_progress(lecture_id, min(78, 50 + int(audio_pct * .28)), stage,
                          eta_seconds=eta, speed=f"{rate_ratio:.1f}x аудио")
         del model
@@ -760,7 +778,7 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
         if not transcript:
             raise RuntimeError("В аудио не удалось распознать речь")
         set_progress(lecture_id, 80, "Составляем пересказ, тезисы и заголовки")
-        summary, outline, keywords = summarize_and_outline(transcript)
+        summary, outline, keywords = summarize_and_outline(transcript, language=speech_language)
         set_progress(lecture_id, 89, "Загружаем модель смыслового поиска", eta_seconds=8)
         vectors = []
         batch_size = 32
@@ -1348,10 +1366,10 @@ class AccountAvatarPayload(BaseModel):
 @app.put("/api/account/avatar")
 def update_account_avatar(payload: AccountAvatarPayload, request: Request):
     value = payload.avatar.strip()
-    if value and not re.fullmatch(r"(?:Л|Ф|✦|◉|❋|☼|🌿|📚|✍️|🎓)", value):
+    if value and not re.fullmatch(r"(?:[А-ЯЁA-Z]{1,3}|✦|◉|❋|☼|🌿|📚|✍️|🎓)", value):
         match = re.fullmatch(r"data:image/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})", value)
         if not match:
-            raise HTTPException(400, "Выберите готовый аватар или изображение PNG, JPEG либо WebP")
+            raise HTTPException(400, "Введите до трёх русских или латинских букв, выберите готовый аватар или загрузите PNG, JPEG либо WebP")
         try:
             image = base64.b64decode(match.group(2), validate=True)
         except Exception as exc:
@@ -1533,8 +1551,11 @@ async def upload_lecture(
     file: UploadFile = File(...),
     title: str = Form(""),
     folder_id: str = Form(""),
-    new_folder_name: str = Form("")
+    new_folder_name: str = Form(""),
+    speech_language: str = Form("ru")
 ):
+    if speech_language not in SPEECH_LANGUAGES:
+        raise HTTPException(400, "Выберите поддерживаемый язык распознавания")
     ext = Path(file.filename or "").suffix.lower()
     if ext not in {".mp4", ".webm"}:
         raise HTTPException(400, "Загрузите видео MP4 или WebM")
@@ -1563,7 +1584,7 @@ async def upload_lecture(
         con.execute("BEGIN IMMEDIATE")
         final_folder_id = resolve_or_create_folder(con, request.state.user_id, folder_id, new_folder_name)
         display_title = unique_lecture_title(con, request.state.user_id, title or Path(file.filename or "upload").stem)
-        con.execute("INSERT INTO lectures(id,title,source,media_path,status,owner_id,media_type,folder_id,started_at) VALUES(?,?,?,?,?,?,?,?,?)", (lecture_id, encrypt_text(display_title), encrypt_text(file.filename or "upload"), str(path), "queued", request.state.user_id, "video/webm" if ext == ".webm" else "video/mp4", final_folder_id, time.time())); con.commit()
+        con.execute("INSERT INTO lectures(id,title,source,media_path,status,owner_id,media_type,folder_id,started_at,speech_language) VALUES(?,?,?,?,?,?,?,?,?,?)", (lecture_id, encrypt_text(display_title), encrypt_text(file.filename or "upload"), str(path), "queued", request.state.user_id, "video/webm" if ext == ".webm" else "video/mp4", final_folder_id, time.time(), speech_language)); con.commit()
     background.add_task(process_lecture, lecture_id, path)
     return {"id": lecture_id, "folder_id": final_folder_id}
 
@@ -1574,6 +1595,7 @@ class LinkRequest(BaseModel):
     quality: str = "best"
     folder_id: str | None = None
     new_folder_name: str | None = None
+    speech_language: str = "ru"
 
 
 @app.post("/api/lectures/link", status_code=202)
@@ -1582,6 +1604,8 @@ def add_link(body: LinkRequest, background: BackgroundTasks, request: Request):
 
 
 def _add_link(body: LinkRequest, background: BackgroundTasks, owner_id: str):
+    if body.speech_language not in SPEECH_LANGUAGES:
+        raise HTTPException(400, "Выберите поддерживаемый язык распознавания")
     url = normalize_video_url(body.url)
     quality = body.quality if body.quality in QUALITY_LEVELS else ""
     if not quality:
@@ -1591,7 +1615,7 @@ def _add_link(body: LinkRequest, background: BackgroundTasks, owner_id: str):
         con.execute("BEGIN IMMEDIATE")
         final_folder_id = resolve_or_create_folder(con, owner_id, body.folder_id, body.new_folder_name)
         display_title = unique_lecture_title(con, owner_id, body.title or "Лекция по ссылке")
-        con.execute("INSERT INTO lectures(id,title,source,status,owner_id,quality,folder_id,started_at) VALUES(?,?,?,?,?,?,?,?)", (lecture_id, encrypt_text(display_title), encrypt_text(url), "queued", owner_id, quality, final_folder_id, time.time())); con.commit()
+        con.execute("INSERT INTO lectures(id,title,source,status,owner_id,quality,folder_id,started_at,speech_language) VALUES(?,?,?,?,?,?,?,?,?)", (lecture_id, encrypt_text(display_title), encrypt_text(url), "queued", owner_id, quality, final_folder_id, time.time(), body.speech_language)); con.commit()
     background.add_task(process_lecture, lecture_id, url, True, quality)
     return {"id": lecture_id, "folder_id": final_folder_id}
 
@@ -1709,17 +1733,59 @@ def get_segments(lecture_id: str, request: Request):
         return [{**dict(r), "text": decrypt_text(r["text"])} for r in rows]
 
 
+class SubtitleTranslationRequest(BaseModel):
+    target_language: str
+    offset: int = 0
+    limit: int = 12
+
+
+@app.post("/api/lectures/{lecture_id}/subtitles/translate")
+def translate_lecture_subtitles(lecture_id: str, body: SubtitleTranslationRequest, request: Request):
+    """Translate a bounded batch in memory; the original transcript and media stay untouched."""
+    if body.target_language not in SPEECH_LANGUAGES:
+        raise HTTPException(400, "Выберите поддерживаемый язык перевода")
+    if body.offset < 0 or not 1 <= body.limit <= 12:
+        raise HTTPException(400, "Недопустимый диапазон субтитров")
+    with closing(db()) as con:
+        lecture = con.execute("SELECT status FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
+        if not lecture:
+            raise HTTPException(404, "Лекция не найдена")
+        if lecture["status"] != "ready":
+            raise HTTPException(409, "Перевод доступен после обработки лекции")
+        total = con.execute("SELECT COUNT(*) FROM segments WHERE lecture_id=?", (lecture_id,)).fetchone()[0]
+        rows = con.execute("SELECT start,end,text FROM segments WHERE lecture_id=? ORDER BY start LIMIT ? OFFSET ?", (lecture_id, body.limit, body.offset)).fetchall()
+    if not rows:
+        return {"total": total, "offset": body.offset, "items": []}
+    binary = Path(os.getenv("SUMMARY_BINARY", ROOT / "bin" / "llama-cli"))
+    model = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
+    if not binary.is_file() or not model.is_file():
+        raise HTTPException(503, "Локальная модель перевода временно недоступна")
+    from app.content import translate_subtitles
+    source = [{"start": row["start"], "end": row["end"], "text": decrypt_text(row["text"])} for row in rows]
+    try:
+        translated = translate_subtitles(source, body.target_language, binary, model)
+    except subprocess.TimeoutExpired:
+        raise HTTPException(504, "Перевод занял слишком много времени. Повторите попытку.")
+    except Exception:
+        raise HTTPException(502, "Не удалось перевести эту часть лекции. Повторите попытку.")
+    if len(translated) != len(source):
+        raise HTTPException(502, "Не удалось надёжно разобрать перевод этой части. Повторите попытку.")
+    return {"total": total, "offset": body.offset,
+            "items": [{"index": body.offset + index, "start": row["start"], "end": row["end"], "text": translated[index]}
+                      for index, row in enumerate(rows)]}
+
+
 @app.post("/api/lectures/{lecture_id}/outline/rebuild")
 def rebuild_outline(lecture_id: str, request: Request):
     with closing(db()) as con:
-        lecture = con.execute("SELECT status FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
+        lecture = con.execute("SELECT status,speech_language FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
         if not lecture:
             raise HTTPException(404, "Лекция не найдена")
         if lecture["status"] != "ready":
             raise HTTPException(409, "Оглавление можно обновить после обработки лекции")
         rows = con.execute("SELECT start,end,text FROM segments WHERE lecture_id=? ORDER BY start", (lecture_id,)).fetchall()
     segments = [{"start": row["start"], "end": row["end"], "text": decrypt_text(row["text"])} for row in rows]
-    summary, outline, keywords = summarize_and_outline(segments)
+    summary, outline, keywords = summarize_and_outline(segments, language=lecture["speech_language"] or "ru")
     with closing(db()) as con:
         con.execute("UPDATE lectures SET summary=?,outline=?,keywords=? WHERE id=? AND owner_id=?", (encrypt_text(summary), encrypt_text(json.dumps(outline, ensure_ascii=False)), encrypt_text(json.dumps(keywords, ensure_ascii=False)), lecture_id, request.state.user_id))
         con.commit()
