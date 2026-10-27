@@ -421,3 +421,27 @@ html[data-theme="dark"] .admin-table th{color:#b4c0b1}
 html[data-theme="dark"] .plyr{--plyr-color-main:#b9d68f;--plyr-video-control-color:#f1f5ed;--plyr-menu-background:#18201b;--plyr-menu-color:#eef2e9;--plyr-tooltip-background:#18201b;--plyr-tooltip-color:#eef2e9}
 @media(max-width:570px){.theme-toggle{height:36px;min-width:65px;padding:0 8px;font-size:9px}.top-actions{gap:6px}}
 .subtitle-translate-bar{display:flex;align-items:end;gap:9px;flex-wrap:wrap;padding:0 0 12px;margin:-3px 0 10px;border-bottom:1px solid var(--line)}.subtitle-translate-bar label{display:grid;gap:4px;color:var(--muted);font-size:10px;font-weight:700}.subtitle-translate-bar select{min-height:34px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:var(--white);color:var(--ink);font:600 11px Manrope}.subtitle-translate-bar button{min-height:34px;padding:0 13px;border:1px solid var(--green);border-radius:6px;background:var(--green);color:#fff;font:700 11px Manrope;cursor:pointer}.subtitle-translate-bar button:disabled{opacity:.58;cursor:wait}.subtitle-translate-bar #subtitleTranslationStatus{color:var(--muted);font-size:10px;padding-bottom:9px}.site-language-wrap select{min-height:34px;padding:0 9px;border:1px solid var(--line);border-radius:999px;background:var(--white);color:var(--ink);font:700 10px Manrope;cursor:pointer}.top-actions{display:flex;align-items:center;gap:9px}.theme-toggle{height:34px;display:flex;align-items:center;gap:6px;padding:0 10px;border:1px solid var(--line);border-radius:999px;background:var(--white);color:var(--ink);font:700 10px Manrope;cursor:pointer}.theme-toggle:hover{border-color:var(--green);transform:translateY(-1px)}
+
+/* Refined header, controls and legibility. */
+.topbar{display:flex;align-items:center;justify-content:space-between;min-height:74px;position:sticky;top:0;z-index:50;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:0!important;box-shadow:none!important;padding:8px 0}
+.topbar .top-actions{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:nowrap;min-width:0;flex:none}.topbar .breadcrumbs{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#accountButton{position:relative;top:auto;right:auto;z-index:51;flex:none;min-height:44px;white-space:nowrap}
+.site-language-wrap select{min-width:78px;height:42px;padding:0 10px}
+.theme-toggle{min-height:42px;white-space:nowrap}
+.hero-copy,.hero-art{transition:opacity .55s cubic-bezier(.22,.8,.24,1),translate .65s cubic-bezier(.22,.8,.24,1)}
+.hero-scroll-away .hero-copy,.hero-scroll-away .hero-art{opacity:0;translate:0 -18px;pointer-events:none}
+body{font-size:16px}
+.hero p{font-size:17px;line-height:1.8}
+.eyebrow{font-size:11px}
+.search-box input{font-size:16px}
+.search-meta{font-size:10px}
+.lecture-card h3,.lecture-title{font-size:21px}
+html[data-theme="dark"] .topbar{background:transparent!important;box-shadow:none!important}
+html[data-theme="dark"] .account-chip{background:rgba(24,32,27,.94);color:var(--ink);border-color:#354138}
+html[data-theme="dark"] .site-language-wrap select,html[data-theme="dark"] .theme-toggle{background:#1b241e;color:var(--ink);border-color:#354138}
+html[data-theme="dark"] .art-tag,html[data-theme="dark"] .orb-popover{background:#202a23;color:#e6eee1;border-color:#3a493d;box-shadow:0 9px 24px #0006}
+html[data-theme="dark"] .detail-side,html[data-theme="dark"] .account-avatar-editor,html[data-theme="dark"] .account-stats>div{background:#1b241e;color:var(--ink);border-color:#354138}
+html[data-theme="dark"] .search-results mark{background:#5e6529;color:#f5f8dc}
+html[data-theme="dark"] select option{background:#18201b;color:#eef2e9}
+@media(max-width:700px){.topbar{min-height:62px;padding:6px 0}.topbar .top-actions{gap:6px}.site-language-wrap select{min-width:72px;height:40px;padding:0 8px}#accountButton{min-height:40px;padding:4px 9px 4px 5px}.hero{min-height:285px}}
+@media(max-width:570px){.topbar .breadcrumbs{display:none}.topbar{min-height:56px}.site-language-wrap select{min-width:66px;height:38px;padding:0 6px;font-size:10px}.theme-toggle{min-width:40px;width:40px;min-height:38px;padding:0;justify-content:center}.theme-toggle [data-theme-label],#accountButton #accountName,#accountButton .account-caret{display:none}#accountButton{width:40px;min-width:40px;justify-content:center;padding:3px}.topbar .top-actions{gap:5px}.hero p{font-size:15px}}
