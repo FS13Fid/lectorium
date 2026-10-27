@@ -170,7 +170,7 @@ def model_response(binary: Path, model: Path, prompt: str, max_tokens: int) -> s
 def translate_subtitles(segments: list[dict], target_language: str, binary: Path, model: Path) -> list[str]:
     """Translate one small batch while keeping transcript rows in their original order."""
     language_names = {
-        "ru": "Russian", "en": "English", "be": "Belarusian",
+        "ru": "Russian", "en": "English",
         "zh": "Chinese", "de": "German", "es": "Spanish",
     }
     if target_language not in language_names:
@@ -322,7 +322,6 @@ def local_model_notes(groups: list[tuple[float, list[dict]]], binary: Path, mode
 def multilingual_extractive_notes(groups: list[tuple[float, list[dict]]], language: str) -> tuple[str, list[str]]:
     labels={
         "en":("Topic","Key points","Takeaway"),
-        "be":("Тэма","Асноўныя думкі","Выснова"),
         "zh":("主题","要点","结论"),
         "de":("Thema","Kernpunkte","Fazit"),
         "es":("Tema","Ideas clave","Conclusión"),
