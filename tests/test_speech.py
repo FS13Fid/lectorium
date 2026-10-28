@@ -45,7 +45,7 @@ class SpeechRoutingTests(unittest.TestCase):
                 self.assertEqual(model.transcribe.call_args.kwargs['language'], language)
                 # Music-backed speech must survive the existing no-VAD path.
                 self.assertFalse(model.transcribe.call_args.kwargs['vad_filter'])
-                self.assertEqual(model.transcribe.call_args.kwargs['beam_size'], 5)
+                self.assertEqual(model.transcribe.call_args.kwargs['beam_size'], 3)
 
     def test_detection_does_not_decode_a_transcript(self):
         with tempfile.NamedTemporaryFile(suffix='.wav') as audio:

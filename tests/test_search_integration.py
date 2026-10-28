@@ -74,6 +74,29 @@ class IntegrationTests(unittest.TestCase):
    m.assistant(m.AssistantMessage(question='Почему это так?',history=[{'question':'пространство и время','answer':'text'}]),self.req)
    self.assertIn('пространство и время',retrieve.call_args.args[1])
   with self.assertRaises(m.HTTPException):m.assistant(m.AssistantMessage(question='пространство',language='fr'),self.req)
+ def test_bookmarks_and_watch_progress_are_private_and_bounded(self):
+  created=m.create_bookmark('l1',m.BookmarkInput(position=130,note='Повторить аргумент'),self.req)
+  self.assertEqual(created['note'],'Повторить аргумент')
+  self.assertEqual(m.list_bookmarks(self.req)[0]['position'],130)
+  m.update_bookmark(created['id'],m.BookmarkUpdate(note='Важный вывод'),self.req)
+  self.assertEqual(m.list_bookmarks(self.req)[0]['note'],'Важный вывод')
+  m.save_watch_progress('l1',m.WatchProgress(position=140),self.req)
+  self.assertEqual(m.list_watch_progress(self.req)[0]['position'],140)
+  bob=SimpleNamespace(state=SimpleNamespace(user_id='bob'))
+  with self.assertRaises(m.HTTPException):m.create_bookmark('l1',m.BookmarkInput(position=10),bob)
+  with self.assertRaises(m.HTTPException):m.update_bookmark(created['id'],m.BookmarkUpdate(note='hack'),bob)
+  with self.assertRaises(m.HTTPException):m.save_watch_progress('l1',m.WatchProgress(position=float('nan')),self.req)
+  m.delete_bookmark(created['id'],self.req)
+  self.assertEqual(m.list_bookmarks(self.req),[])
+ def test_translation_model_prefers_optional_large_model(self):
+  from pathlib import Path
+  import tempfile
+  with tempfile.TemporaryDirectory() as directory:
+   base=Path(directory)/'base.gguf';large=Path(directory)/'translation.gguf';base.touch()
+   with patch.dict(os.environ,{'SUMMARY_MODEL_FILE':str(base),'TRANSLATION_MODEL_FILE':str(large)}):
+    self.assertEqual(m.translation_model_file(),base)
+    large.touch()
+    self.assertEqual(m.translation_model_file(),large)
  def test_unauthorized_endpoint(self):
   # ASGI request without a session must be rejected before retrieval.
   import asyncio

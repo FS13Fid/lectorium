@@ -252,8 +252,8 @@ def translate_subtitles(segments: list[dict], target_language: str, binary: Path
         if context_lines else ""
     )
     natural_guidance = {
-        "ru": "Use natural, idiomatic Russian instead of copying source word order; for example, "
-              "translate ‘Good job!’ as ‘Молодец!’, and address a group of children as ‘ребята’, not literally ‘я дети’. ",
+        "ru": "Translate the exact meaning into simple, natural Russian. Preserve each person, action, and object. "
+              "Do not replace a sentence with a generic reaction or praise unless the source itself says that. ",
         "zh": "Write all translated content in natural Simplified Chinese. Keep only proper names, numbers, and unavoidable established terms in their original form; never leave Russian phrases untranslated. ",
         "en": "Write all translated content in natural English; never leave Russian phrases untranslated. ",
         "de": "Write all translated content in natural German; never leave Russian phrases untranslated. ",
@@ -313,15 +313,6 @@ def translate_lecture_notes(summary: str, outline: list[dict], keywords: list[st
                             target_language: str, binary: Path, model: Path) -> tuple[str, list[dict], list[str]]:
     """Translate visible lecture notes without changing their stored originals."""
     summary_lines = (summary or "").splitlines()
-    entries: list[tuple[str, int, str]] = []
-    for index, line in enumerate(summary_lines):
-        if line.strip():
-            entries.append(("summary", index, line))
-    for index, chapter in enumerate(outline):
-        entries.append(("outline", index, str(chapter.get("title") or "")))
-    for index, keyword in enumerate(keywords):
-        entries.append(("keyword", index, str(keyword or "")))
-
     translated_summary = list(summary_lines)
     translated_outline = [dict(chapter) for chapter in outline]
     translated_keywords = list(keywords)
@@ -333,13 +324,34 @@ def translate_lecture_notes(summary: str, outline: list[dict], keywords: list[st
         "es": {"Тема": "Tema", "Главный вопрос": "Pregunta principal", "Основные разделы": "Secciones principales", "Основные тезисы": "Ideas clave", "Ключевые идеи": "Ideas clave", "Итог": "Conclusión", "Тезисы": "Ideas clave"},
         "it": {"Тема": "Tema", "Главный вопрос": "Domanda principale", "Основные разделы": "Sezioni principali", "Основные тезисы": "Punti chiave", "Ключевые идеи": "Idee chiave", "Итог": "Conclusione", "Тезисы": "Punti chiave"},
     }
-    for offset in range(0, len(entries), 8):
-        batch = entries[offset:offset + 8]
-        context = [{"text": text} for _, _, text in entries[max(0, offset - 2):offset]]
-        context.extend({"text": text} for _, _, text in entries[offset + len(batch):offset + len(batch) + 2])
+    source_labels = {
+        "тема": "Тема", "topic": "Тема", "主题": "Тема", "thema": "Тема", "tema": "Тема", "argomento": "Тема",
+        "главный вопрос": "Главный вопрос", "main question": "Главный вопрос", "核心问题": "Главный вопрос", "leitfrage": "Главный вопрос", "pregunta principal": "Главный вопрос", "domanda principale": "Главный вопрос",
+        "основные разделы": "Основные разделы", "main sections": "Основные разделы", "主要部分": "Основные разделы", "hauptabschnitte": "Основные разделы", "secciones principales": "Основные разделы", "sezioni principali": "Основные разделы",
+        "основные тезисы": "Основные тезисы", "тезисы": "Основные тезисы", "key points": "Основные тезисы", "要点": "Основные тезисы", "kernaussagen": "Основные тезисы", "ideas clave": "Основные тезисы", "punti chiave": "Основные тезисы",
+        "ключевые идеи": "Ключевые идеи", "key ideas": "Ключевые идеи", "核心观点": "Ключевые идеи", "kernideen": "Ключевые идеи", "idee chiave": "Ключевые идеи",
+        "итог": "Итог", "conclusion": "Итог", "结论": "Итог", "fazit": "Итог", "conclusión": "Итог", "conclusione": "Итог",
+    }
+    entries: list[tuple[str, int, str]] = []
+    for index, line in enumerate(summary_lines):
+        if not line.strip():
+            continue
+        label_match = re.match(r"^\s*([^:：]{1,45})\s*[:：]\s*(.*?)\s*$", line)
+        canonical = source_labels.get(label_match.group(1).strip().casefold()) if label_match else None
+        if canonical and not label_match.group(2):
+            translated_summary[index] = f"{labels[target_language][canonical]}:"
+        else:
+            body = label_match.group(2) if canonical else line
+            bullet = re.match(r"^(\s*[•*-]\s+)(.*)$", body)
+            entries.append(("summary", index, bullet.group(2) if bullet else body))
+    for index, chapter in enumerate(outline):
+        entries.append(("outline", index, str(chapter.get("title") or "")))
+    for index, keyword in enumerate(keywords):
+        entries.append(("keyword", index, str(keyword or "")))
+    for offset in range(0, len(entries), 4):
+        batch = entries[offset:offset + 4]
         translated = translate_subtitles(
             [{"text": text} for _, _, text in batch], target_language, binary, model,
-            context=context,
         )
         if len(translated) != len(batch):
             raise ValueError("Не удалось перевести содержание лекции")
@@ -366,7 +378,7 @@ def translate_lecture_notes(summary: str, outline: list[dict], keywords: list[st
                 return True
             if not valid_target(value):
                 try:
-                    retry = translate_subtitles([{"text": source}], target_language, binary, model, context=context)
+                    retry = translate_subtitles([{"text": source}], target_language, binary, model)
                 except Exception as error:
                     raise ValueError(f"Translation failed for source line {source[:90]!r}: {error}") from error
                 if retry:
@@ -378,10 +390,15 @@ def translate_lecture_notes(summary: str, outline: list[dict], keywords: list[st
                 else:
                     raise ValueError(f"Translation retry returned no text for {source[:90]!r} in {target_language}")
             if kind == "summary":
-                label = re.match(r"^\s*(Тема|Главный вопрос|Основные разделы|Основные тезисы|Ключевые идеи|Итог|Тезисы)\s*[:：]", source, re.I)
-                if label:
-                    value = re.sub(r"^\s*(?:[^:：]{1,45})\s*[:：]\s*", "", value, count=1)
-                    value = f"{labels[target_language][label.group(1)]}: {value}"
+                original_line = summary_lines[index]
+                label_match = re.match(r"^\s*([^:：]{1,45})\s*[:：]\s*", original_line)
+                canonical = source_labels.get(label_match.group(1).strip().casefold()) if label_match else None
+                if canonical:
+                    value = f"{labels[target_language][canonical]}: {value}"
+                else:
+                    bullet = re.match(r"^(\s*[•*-]\s+)", original_line)
+                    if bullet:
+                        value = bullet.group(1) + value
                 translated_summary[index] = value
             elif kind == "outline":
                 translated_outline[index]["title"] = value
@@ -455,19 +472,28 @@ def local_model_notes(groups: list[tuple[float, list[dict]]], binary: Path, mode
                     if not DIRECT_ADDRESS.search(row["text"]) and not PROMOTION.search(row["text"])]
         best = sorted(suitable[:4], key=lambda row: row["start"])
         selected.append(" ".join(row["text"] for row in best)[:1000] or " ".join(seg["text"] for seg in group[:8])[:1000])
+    title_prompt = ("Для каждого фрагмента придумай короткий нейтральный заголовок темы по-русски (2–6 слов). "
+                    "Не добавляй пояснений. Верни ровно одну строку на номер в формате 1. Заголовок.\n" +
+                    "\n".join(f"{index + 1}. {part[:420]}" for index, part in enumerate(selected)))
+    title_output = model_response(binary, model, title_prompt, min(120, max(35, len(selected) * 12))) if selected else ""
+    parsed_titles = {}
+    for line in title_output.splitlines():
+        match = re.match(r"\s*(\d{1,3})[.)\-:]\s*(.+?)\s*$", line)
+        if match:
+            parsed_titles[int(match.group(1)) - 1] = match.group(2)
     titles = []
-    for part in selected:
-        title_prompt = ("Дай короткий нейтральный заголовок темы текста на русском языке (от 2 до 6 слов). "
-                        "Не используй обращения к зрителю, рекламу, названия приложения и незаконченные фразы. "
-                        "Ответь только заголовком.\nТекст:\n" + part[:650] + "\nЗаголовок:\n")
-        title = clean_sentence(model_response(binary, model, title_prompt, 35)).strip("\"' .!?—-")
+    for index, part in enumerate(selected):
+        title = clean_sentence(parsed_titles.get(index, "")).strip("\"' .!?—-")
         title_terms = set(tokens(title))
         source_terms = set(tokens(part))
         if not (2 <= len(title.split()) <= 8 and len(title) <= 85 and re.search(r"[А-Яа-яЁё]", title)
                 and len(title_terms) >= 2 and not DIRECT_ADDRESS.search(title) and not PROMOTION.search(title)
                 and not re.search(r"\b(?:и|в|на|с|к|о|для|от|по)$", title, re.I)
                 and len(title_terms & source_terms) / max(1, len(title_terms)) >= .65):
-            title = ""
+            # Keep useful chapter navigation even when the small local model
+            # omits a numbered answer or returns a title unsupported by speech.
+            title = " ".join(part.split()[:6]).strip(" ,.;:!?—-\"'")
+            title = clean_sentence(title).strip(" .!?—-")[:72]
         titles.append(title)
     nonempty = [part for part in selected if part]
     part_limit = min(750, max(180, 2800 // max(1, len(nonempty)) - 12))

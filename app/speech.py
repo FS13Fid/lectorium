@@ -79,6 +79,6 @@ class SpeechRecognizer:
         # Keep sung and music-backed words: the VAD used to drop quiet syllables and
         # whole days from children's songs. The multilingual int8 model and a wider beam
         # improve recognition without requiring a GPU.
-        segments, _ = self.model.transcribe(mono, language=language, beam_size=5, vad_filter=False,
+        segments, _ = self.model.transcribe(mono, language=language, beam_size=3, vad_filter=False,
                                            condition_on_previous_text=False)
         return segments

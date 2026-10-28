@@ -1,136 +1,344 @@
-/* UI language switching. User supplied lecture content stays in its spoken language. */
-(() => {
-  const normalize = value => String(value).replace(/\s+/g,' ').trim();
-  const locales = {
-    ru: {
-      'Язык интерфейса':'Язык интерфейса','ЗНАНИЯ — НАЙДЕНЫ':'ЗНАНИЯ — НАЙДЕНЫ','В каждой лекции':'В каждой лекции','есть ':'есть ','ответ.':'ответ.','Ищите идеи и объяснения, а не отдельные слова.':'Ищите идеи и объяснения, а не отдельные слова.','Мы покажем нужный момент и поможем разобраться.':'Мы покажем нужный момент и поможем разобраться.','Нажмите на лупу,':'Нажмите на лупу,','чтобы найти идею':'чтобы найти идею','идея найдена':'идея найдена','СЕМАНТИЧЕСКИЙ ПОИСК':'СЕМАНТИЧЕСКИЙ ПОИСК','Ищет по всем готовым лекциям':'Ищет по всем готовым лекциям','Найти':'Найти','ВАША БИБЛИОТЕКА':'ВАША БИБЛИОТЕКА','Лекции ':'Лекции ','Добавить лекцию':'Добавить лекцию','Начните с первой лекции':'Начните с первой лекции','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ','Язык речи в видео':'Язык речи в видео','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.','Название лекции':'Название лекции','Папка для лекции':'Папка для лекции','＋ Новая папка':'＋ Новая папка','Без папки (основная библиотека)':'Без папки (основная библиотека)','Отмена':'Отмена','Создастся новая папка, и файл сразу будет перемещён в неё.':'Создастся новая папка, и файл сразу будет перемещён в неё.','Перетащите видео сюда':'Перетащите видео сюда','или ':'или ','выберите файл':'выберите файл','Ссылка':'Ссылка','Файл видео':'Файл видео','Ссылка на видео':'Ссылка на видео','Качество видео':'Качество видео','Лучшее доступное':'Лучшее доступное','Начать обработку ':'Начать обработку ','Отменить загрузку':'Отменить загрузку','Личный кабинет':'Личный кабинет','ЛИЧНОЕ ПРОСТРАНСТВО':'ЛИЧНОЕ ПРОСТРАНСТВО','С возвращением':'С возвращением','Войдите, чтобы открыть свою библиотеку лекций.':'Войдите, чтобы открыть свою библиотеку лекций.','Войти':'Войти','Создать аккаунт':'Создать аккаунт','Логин':'Логин','Пароль':'Пароль','Введите логин и пароль вашего кабинета.':'Введите логин и пароль вашего кабинета.','ВАШ АККАУНТ':'ВАШ АККАУНТ','Свои буквы':'Свои буквы','Сохранить':'Сохранить','Загрузить своё фото':'Загрузить своё фото','лекций':'лекций','готово':'готово','Изменить пароль':'Изменить пароль','Выйти из аккаунта ':'Выйти из аккаунта ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'ПЕРЕМЕСТИТЬ ЛЕКЦИЮ','Переместить лекцию':'Переместить лекцию','Выберите папку или создайте новую.':'Выберите папку или создайте новую.','Или создать новую папку':'Или создать новую папку','Создать и переместить ':'Создать и переместить ','Оглавление':'Оглавление','Краткий пересказ':'Краткий пересказ','Обновить пересказ и главы':'Обновить пересказ и главы','Перераспознать речь':'Перераспознать речь','Транскрипт':'Транскрипт','Главы':'Главы','Удалить лекцию':'Удалить лекцию','Администрирование':'Администрирование','Аккаунты':'Аккаунты','Видео на сервере':'Видео на сервере','Настройки':'Настройки','Создать папку':'Создать папку','Новая папка':'Новая папка','Собрать лекции вместе':'Собрать лекции вместе','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.','Название папки':'Название папки','Создать папку ':'Создать папку ','Папки с лекциями':'Папки с лекциями'
-    },
-    en: {
-      'Язык интерфейса':'Interface language','ЗНАНИЯ — НАЙДЕНЫ':'KNOWLEDGE — FOUND','В каждой лекции':'Every lecture has','есть ':'an ','ответ.':'answer.','Ищите идеи и объяснения, а не отдельные слова.':'Search for ideas and explanations, not just words.','Мы покажем нужный момент и поможем разобраться.':'We’ll find the right moment and help you understand.','Нажмите на лупу,':'Click the magnifier','чтобы найти идею':'to find an idea','идея найдена':'idea found','СЕМАНТИЧЕСКИЙ ПОИСК':'SEMANTIC SEARCH','Ищет по всем готовым лекциям':'Searches all processed lectures','Найти':'Search','ВАША БИБЛИОТЕКА':'YOUR LIBRARY','Лекции ':'Lectures ','Добавить лекцию':'Add a lecture','Начните с первой лекции':'Start with your first lecture','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'Upload a video to create a transcript, chapters and semantic search.','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'LICENSE AND TERMS OF USE','Язык речи в видео':'Spoken language in the video','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'Choose the language spoken in the video. Interface language is selected separately.','Название лекции':'Lecture title','Папка для лекции':'Lecture folder','＋ Новая папка':'＋ New folder','Без папки (основная библиотека)':'No folder (main library)','Отмена':'Cancel','Создастся новая папка, и файл сразу будет перемещён в неё.':'A new folder will be created and the file moved into it.','Перетащите видео сюда':'Drop a video here','или ':'or ','выберите файл':'choose a file','Ссылка':'Link','Файл видео':'Video file','Ссылка на видео':'Video link','Качество видео':'Video quality','Лучшее доступное':'Best available','Начать обработку ':'Start processing ','Отменить загрузку':'Cancel upload','Личный кабинет':'My account','ЛИЧНОЕ ПРОСТРАНСТВО':'YOUR SPACE','С возвращением':'Welcome back','Войдите, чтобы открыть свою библиотеку лекций.':'Sign in to open your lecture library.','Войти':'Sign in','Создать аккаунт':'Create account','Логин':'Username','Пароль':'Password','Введите логин и пароль вашего кабинета.':'Enter your account username and password.','ВАШ АККАУНТ':'YOUR ACCOUNT','Свои буквы':'Your initials','Сохранить':'Save','Загрузить своё фото':'Upload your photo','лекций':'lectures','готово':'ready','Изменить пароль':'Change password','Выйти из аккаунта ':'Sign out ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'MOVE LECTURE','Переместить лекцию':'Move lecture','Выберите папку или создайте новую.':'Choose a folder or create one.','Или создать новую папку':'Or create a new folder','Создать и переместить ':'Create and move ','Оглавление':'Outline','Краткий пересказ':'Summary','Обновить пересказ и главы':'Refresh summary and chapters','Перераспознать речь':'Re-transcribe speech','Транскрипт':'Transcript','Главы':'Chapters','Удалить лекцию':'Delete lecture','Администрирование':'Administration','Аккаунты':'Accounts','Видео на сервере':'Server videos','Настройки':'Settings','Создать папку':'Create folder','Новая папка':'New folder','Собрать лекции вместе':'Group your lectures','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'Give the folder a short name. You can move lectures into it from each lecture card.','Название папки':'Folder name','Создать папку ':'Create folder ','Папки с лекциями':'Lecture folders'
-    },
-    zh: {
-      'Язык интерфейса':'界面语言','ЗНАНИЯ — НАЙДЕНЫ':'知识，已找到','В каждой лекции':'每堂课中都有','есть ':'','ответ.':'答案。','Ищите идеи и объяснения, а не отдельные слова.':'搜索观点和解释，而不只是单个词。','Мы покажем нужный момент и поможем разобраться.':'我们会定位相关片段，帮助您理解。','Нажмите на лупу,':'点击放大镜','чтобы найти идею':'查找观点','идея найдена':'已找到观点','СЕМАНТИЧЕСКИЙ ПОИСК':'语义搜索','Ищет по всем готовым лекциям':'搜索所有已处理的课程','Найти':'搜索','ВАША БИБЛИОТЕКА':'您的资料库','Лекции ':'课程 ','Добавить лекцию':'添加课程','Начните с первой лекции':'从第一堂课开始','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'上传视频，即可生成转录、章节和语义搜索。','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'许可证与使用条款','Язык речи в видео':'视频语音语言','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'请选择视频中的语音语言。界面语言单独设置。','Название лекции':'课程名称','Папка для лекции':'课程文件夹','＋ Новая папка':'＋ 新建文件夹','Без папки (основная библиотека)':'无文件夹（主资料库）','Отмена':'取消','Создастся новая папка, и файл сразу будет перемещён в неё。':'将创建文件夹并移动此文件。','Перетащите видео сюда':'将视频拖到此处','или ':'或','выберите файл':'选择文件','Ссылка':'链接','Файл видео':'视频文件','Ссылка на видео':'视频链接','Качество видео':'视频画质','Лучшее доступное':'最佳可用','Начать обработку ':'开始处理 ','Отменить загрузку':'取消上传','Личный кабинет':'个人账户','ЛИЧНОЕ ПРОСТРАНСТВО':'个人空间','С возвращением':'欢迎回来','Войдите, чтобы открыть свою библиотеку лекций.':'登录以打开您的课程资料库。','Войти':'登录','Создать аккаунт':'创建账户','Логин':'用户名','Пароль':'密码','Введите логин и пароль вашего кабинета.':'输入账户用户名和密码。','ВАШ АККАУНТ':'您的账户','Свои буквы':'自定义字母','Сохранить':'保存','Загрузить своё фото':'上传头像','лекций':'堂课程','готово':'已完成','Изменить пароль':'更改密码','Выйти из аккаунта ':'退出账户 ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'移动课程','Переместить лекцию':'移动课程','Выберите папку или создайте новую.':'选择文件夹或新建文件夹。','Или создать новую папку':'或新建文件夹','Создать и переместить ':'创建并移动 ','Оглавление':'目录','Краткий пересказ':'摘要','Обновить пересказ и главы':'更新摘要和章节','Перераспознать речь':'重新转录语音','Транскрипт':'转录文本','Главы':'章节','Удалить лекцию':'删除课程','Администрирование':'管理','Аккаунты':'账户','Видео на сервере':'服务器视频','Настройки':'设置','Создать папку':'新建文件夹','Новая папка':'新建文件夹','Собрать лекции вместе':'整理课程','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'为文件夹设置简短名称，之后可从课程卡片移动课程。','Название папки':'文件夹名称','Создать папку ':'创建文件夹 ','Папки с лекциями':'课程文件夹'
-    },
-    de: {
-      'Язык интерфейса':'Oberflächensprache','ЗНАНИЯ — НАЙДЕНЫ':'WISSEN — GEFUNDEN','В каждой лекции':'In jeder Vorlesung gibt es','есть ':'eine ','ответ.':'Antwort.','Ищите идеи и объяснения, а не отдельные слова.':'Suchen Sie nach Ideen und Erklärungen statt nach einzelnen Wörtern.','Мы покажем нужный момент и поможем разобраться.':'Wir zeigen den passenden Moment und helfen beim Verständnis.','Нажмите на лупу,':'Klicken Sie auf die Lupe,','чтобы найти идею':'um eine Idee zu finden','идея найдена':'Idee gefunden','СЕМАНТИЧЕСКИЙ ПОИСК':'SEMANTISCHE SUCHE','Ищет по всем готовым лекциям':'Durchsucht alle verarbeiteten Vorlesungen','Найти':'Suchen','ВАША БИБЛИОТЕКА':'IHRE BIBLIOTHEK','Лекции ':'Vorlesungen ','Добавить лекцию':'Vorlesung hinzufügen','Начните с первой лекции':'Beginnen Sie mit Ihrer ersten Vorlesung','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'Laden Sie ein Video hoch, um Transkript, Kapitel und semantische Suche zu erstellen.','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'LIZENZ UND NUTZUNGSBEDINGUNGEN','Язык речи в видео':'Gesprochene Sprache im Video','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'Wählen Sie die Sprache des Videos. Die Oberflächensprache wird separat eingestellt.','Название лекции':'Vorlesungstitel','Папка для лекции':'Vorlesungsordner','＋ Новая папка':'＋ Neuer Ordner','Без папки (основная библиотека)':'Kein Ordner (Hauptbibliothek)','Отмена':'Abbrechen','Создастся новая папка, и файл сразу будет перемещён в неё.':'Ein neuer Ordner wird erstellt und die Datei dorthin verschoben.','Перетащите видео сюда':'Video hier ablegen','или ':'oder ','выберите файл':'Datei auswählen','Ссылка':'Link','Файл видео':'Videodatei','Ссылка на видео':'Videolink','Качество видео':'Videoqualität','Лучшее доступное':'Beste verfügbare','Начать обработку ':'Verarbeitung starten ','Отменить загрузку':'Upload abbrechen','Личный кабинет':'Mein Konto','ЛИЧНОЕ ПРОСТРАНСТВО':'IHR BEREICH','С возвращением':'Willkommen zurück','Войдите, чтобы открыть свою библиотеку лекций.':'Melden Sie sich an, um Ihre Vorlesungsbibliothek zu öffnen.','Войти':'Anmelden','Создать аккаунт':'Konto erstellen','Логин':'Benutzername','Пароль':'Passwort','Введите логин и пароль вашего кабинета.':'Geben Sie Ihren Benutzernamen und Ihr Passwort ein.','ВАШ АККАУНТ':'IHR KONTO','Свои буквы':'Eigene Initialen','Сохранить':'Speichern','Загрузить своё фото':'Eigenes Foto hochladen','лекций':'Vorlesungen','готово':'fertig','Изменить пароль':'Passwort ändern','Выйти из аккаунта ':'Abmelden ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'VORLESUNG VERSCHIEBEN','Переместить лекцию':'Vorlesung verschieben','Выберите папку или создайте новую.':'Wählen Sie einen Ordner oder erstellen Sie einen neuen.','Или создать новую папку':'Oder neuen Ordner erstellen','Создать и переместить ':'Erstellen und verschieben ','Оглавление':'Gliederung','Краткий пересказ':'Zusammenfassung','Обновить пересказ и главы':'Zusammenfassung und Kapitel aktualisieren','Перераспознать речь':'Sprache erneut erkennen','Транскрипт':'Transkript','Главы':'Kapitel','Удалить лекцию':'Vorlesung löschen','Администрирование':'Administration','Аккаунты':'Konten','Видео на сервере':'Servervideos','Настройки':'Einstellungen','Создать папку':'Ordner erstellen','Новая папка':'Neuer Ordner','Собрать лекции вместе':'Vorlesungen sammeln','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'Geben Sie dem Ordner einen kurzen Namen. Vorlesungen lassen sich später über ihre Karten verschieben.','Название папки':'Ordnername','Создать папку ':'Ordner erstellen ','Папки с лекциями':'Vorlesungsordner'
-    },
-    es: {
-      'Язык интерфейса':'Idioma de la interfaz','ЗНАНИЯ — НАЙДЕНЫ':'CONOCIMIENTO — ENCONTRADO','В каждой лекции':'Cada clase tiene una','есть ':' ','ответ.':'respuesta.','Ищите идеи и объяснения, а не отдельные слова.':'Busca ideas y explicaciones, no solo palabras sueltas.','Мы покажем нужный момент и поможем разобраться.':'Encontraremos el momento adecuado y te ayudaremos a entenderlo.','Нажмите на лупу,':'Pulsa la lupa','чтобы найти идею':'para encontrar una idea','идея найдена':'idea encontrada','СЕМАНТИЧЕСКИЙ ПОИСК':'BÚSQUEDA SEMÁNTICA','Ищет по всем готовым лекциям':'Busca en todas las clases procesadas','Найти':'Buscar','ВАША БИБЛИОТЕКА':'TU BIBLIOTECA','Лекции ':'Clases ','Добавить лекцию':'Añadir clase','Начните с первой лекции':'Empieza con tu primera clase','Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.':'Sube un vídeo para crear la transcripción, los capítulos y la búsqueda semántica.','ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ':'LICENCIA Y CONDICIONES DE USO','Язык речи в видео':'Idioma hablado en el vídeo','Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.':'Elige el idioma hablado en el vídeo. El idioma de la interfaz se configura por separado.','Название лекции':'Título de la clase','Папка для лекции':'Carpeta de la clase','＋ Новая папка':'＋ Nueva carpeta','Без папки (основная библиотека)':'Sin carpeta (biblioteca principal)','Отмена':'Cancelar','Создастся новая папка, и файл сразу будет перемещён в неё.':'Se creará una carpeta nueva y el archivo se moverá a ella.','Перетащите видео сюда':'Arrastra el vídeo aquí','или ':'o ','выберите файл':'elige un archivo','Ссылка':'Enlace','Файл видео':'Archivo de vídeo','Ссылка на видео':'Enlace del vídeo','Качество видео':'Calidad del vídeo','Лучшее доступное':'La mejor disponible','Начать обработку ':'Iniciar procesamiento ','Отменить загрузку':'Cancelar carga','Личный кабинет':'Mi cuenta','ЛИЧНОЕ ПРОСТРАНСТВО':'TU ESPACIO','С возвращением':'Te damos la bienvenida','Войдите, чтобы открыть свою библиотеку лекций.':'Inicia sesión para abrir tu biblioteca de clases.','Войти':'Iniciar sesión','Создать аккаунт':'Crear cuenta','Логин':'Usuario','Пароль':'Contraseña','Введите логин и пароль вашего кабинета.':'Introduce el usuario y la contraseña de tu cuenta.','ВАШ АККАУНТ':'TU CUENTA','Свои буквы':'Tus iniciales','Сохранить':'Guardar','Загрузить своё фото':'Subir una foto','лекций':'clases','готово':'listas','Изменить пароль':'Cambiar contraseña','Выйти из аккаунта ':'Cerrar sesión ','ПЕРЕМЕСТИТЬ ЛЕКЦИЮ':'MOVER CLASE','Переместить лекцию':'Mover clase','Выберите папку или создайте новую.':'Elige una carpeta o crea una nueva.','Или создать новую папку':'O crear una carpeta nueva','Создать и переместить ':'Crear y mover ','Оглавление':'Índice','Краткий пересказ':'Resumen','Обновить пересказ и главы':'Actualizar resumen y capítulos','Перераспознать речь':'Volver a transcribir','Транскрипт':'Transcripción','Главы':'Capítulos','Удалить лекцию':'Eliminar clase','Администрирование':'Administración','Аккаунты':'Cuentas','Видео на сервере':'Vídeos del servidor','Настройки':'Configuración','Создать папку':'Crear carpeta','Новая папка':'Nueva carpeta','Собрать лекции вместе':'Agrupa tus clases','Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.':'Pon un nombre corto a la carpeta. Después podrás mover clases desde su ficha.','Название папки':'Nombre de la carpeta','Создать папку ':'Crear carpeta ','Папки с лекциями':'Carpetas de clases'
-    }
-  };
-  const extraRows=[
-    ['БИБЛИОТЕКА','LIBRARY','图书馆','BIBLIOTHEK','BIBLIOTECA'],
-    ['Все лекции','All lectures','所有课程','Alle Vorlesungen','Todas las clases'],
-    ['Свернуть меню','Collapse menu','收起菜单','Menü einklappen','Contraer menú'],
-    ['Развернуть меню','Expand menu','展开菜单','Menü ausklappen','Expandir menú'],
-    ['Как устроен проект','How it works','项目介绍','So funktioniert das Projekt','Cómo funciona'],
-    ['Например, Введение в машинное обучение','For example, Introduction to machine learning','例如：机器学习导论','Zum Beispiel: Einführung in maschinelles Lernen','Por ejemplo: Introducción al aprendizaje automático'],
-    ['Поддерживаются YouTube, VK Видео, Rutube и многие платформы yt-dlp. Доступные разрешения зависят от ролика.','YouTube, VK Video, Rutube and many yt-dlp platforms are supported. Available resolutions depend on the video.','支持 YouTube、VK Video、Rutube 和许多 yt-dlp 平台。可用清晰度取决于视频。','YouTube, VK Video, Rutube und viele yt-dlp-Plattformen werden unterstützt. Die verfügbaren Auflösungen hängen vom Video ab.','Se admiten YouTube, VK Video, Rutube y muchas plataformas de yt-dlp. La resolución disponible depende del vídeo.'],
-    ['Переместить в папку','Move to folder','移动到文件夹','In Ordner verschieben','Mover a carpeta'],
-    ['С начала','From the beginning','从头开始','Von Anfang an','Desde el principio'],
-    ['ГОТОВА','READY','已就绪','BEREIT','LISTA'],
-    ['ОШИБКА','ERROR','错误','FEHLER','ERROR'],
-    ['ОБРАБОТКА','PROCESSING','处理中','IN BEARBEITUNG','PROCESANDO'],
-    ['ГОТОВИТСЯ','QUEUED','排队中','IN WARTESCHLANGE','EN COLA'],
-    ['лучшее доступное','best available','最佳可用','beste verfügbare','la mejor disponible'],
-    ['Краткий конспект','Short notes','简要笔记','Kurze Notizen','Apuntes breves'],
-    ['Краткий пересказ','Short summary','简短摘要','Kurze Zusammenfassung','Resumen breve'],
-    ['Загружаем транскрипт…','Loading transcript…','正在加载转录文本…','Transkript wird geladen…','Cargando transcripción…'],
-    ['Разделы появятся после обработки.','Chapters will appear after processing.','处理完成后将显示章节。','Kapitel erscheinen nach der Verarbeitung.','Los capítulos aparecerán al terminar el procesamiento.'],
-    ['Разделы не найдены.','No chapters found.','未找到章节。','Keine Kapitel gefunden.','No se encontraron capítulos.'],
-    ['Составляем…','Creating…','正在生成…','Wird erstellt…','Creando…'],
-    ['Готово','Done','完成','Fertig','Listo'],
-    ['Сохраняем…','Saving…','正在保存…','Wird gespeichert…','Guardando…'],
-    ['Аватар сохранён','Avatar saved','头像已保存','Avatar gespeichert','Avatar guardado'],
-    ['Лекция не найдена','Lecture not found','未找到课程','Vorlesung nicht gefunden','Clase no encontrada'],
-    ['Лекция по ссылке','Lecture from link','链接课程','Vorlesung über Link','Clase desde enlace'],
-    ['Загрузка модели распознавания','Loading speech model','正在加载语音识别模型','Spracherkennungsmodell wird geladen','Cargando el modelo de voz']
-    ,['НОВАЯ ЛЕКЦИЯ','NEW LECTURE','新课程','NEUE VORLESUNG','NUEVA CLASE']
-    ,['Загрузите видео или вставьте ссылку — остальное мы сделаем сами.','Upload a video or paste a link — we’ll take care of the rest.','上传视频或粘贴链接，其余交给我们。','Lade ein Video hoch oder füge einen Link ein — wir kümmern uns um den Rest.','Sube un vídeo o pega un enlace; nosotros nos encargamos del resto.']
-    ,['· MP4, WebM · до 500 МБ','· MP4, WebM · up to 500 MB','· MP4、WebM · 最大 500 MB','· MP4, WebM · bis zu 500 MB','· MP4, WebM · hasta 500 MB']
-    ,['До 2160p · 4K','Up to 2160p · 4K','最高 2160p · 4K','Bis zu 2160p · 4K','Hasta 2160p · 4K']
-    ,['До 1440p','Up to 1440p','最高 1440p','Bis zu 1440p','Hasta 1440p']
-    ,['До 1080p · Full HD','Up to 1080p · Full HD','最高 1080p · Full HD','Bis zu 1080p · Full HD','Hasta 1080p · Full HD']
-    ,['До 720p · HD','Up to 720p · HD','最高 720p · HD','Bis zu 720p · HD','Hasta 720p · HD']
-    ,['До 480p','Up to 480p','最高 480p','Bis zu 480p','Hasta 480p']
-    ,['До 360p','Up to 360p','最高 360p','Bis zu 360p','Hasta 360p']
-    ,['НОВАЯ ПАПКА','NEW FOLDER','新建文件夹','NEUER ORDNER','NUEVA CARPETA']
-    ,['У каждой учётной записи своя библиотека. Содержимое хранится в зашифрованном виде.','Each account has its own library. Its contents are stored encrypted.','每个账户都有自己的资料库，内容经过加密存储。','Jedes Konto hat eine eigene Bibliothek. Die Inhalte werden verschlüsselt gespeichert.','Cada cuenta tiene su propia biblioteca. El contenido se almacena cifrado.']
-    ,['Используя Лекторий, вы принимаете','By using Lectorium, you accept the','使用 Lectorium 即表示您接受','Mit der Nutzung von Lectorium akzeptierst du die','Al usar Lectorium, aceptas las']
-    ,['условия использования','terms of use','使用条款','Nutzungsbedingungen','condiciones de uso']
-    ,['Пользователь','User','用户','Benutzer','Usuario']
-    ,['Личная библиотека лекций','Personal lecture library','个人课程资料库','Persönliche Vorlesungsbibliothek','Biblioteca personal de clases']
-    ,['БЕЗОПАСНОСТЬ','SECURITY','安全','SICHERHEIT','SEGURIDAD']
-    ,['Новый пароль','New password','新密码','Neues Passwort','Nueva contraseña']
-    ,['Подтвердите текущий пароль и задайте новый.','Confirm your current password and choose a new one.','确认当前密码并设置新密码。','Bestätige dein aktuelles Passwort und lege ein neues fest.','Confirma tu contraseña actual y elige una nueva.']
-    ,['Текущий пароль','Current password','当前密码','Aktuelles Passwort','Contraseña actual']
-    ,['Сохранить пароль','Save password','保存密码','Passwort speichern','Guardar contraseña']
-    ,['ДОСТУП К АККАУНТУ','ACCOUNT ACCESS','账户访问','KONTOZUGANG','ACCESO A LA CUENTA']
-    ,['Задать новый пароль','Set a new password','设置新密码','Neues Passwort festlegen','Establecer una nueva contraseña']
-    ,['УПРАВЛЕНИЕ СИСТЕМОЙ','SYSTEM MANAGEMENT','系统管理','SYSTEMVERWALTUNG','GESTIÓN DEL SISTEMA']
-    ,['Загружаем данные…','Loading data…','正在加载数据…','Daten werden geladen…','Cargando datos…']
-    ,['Авто','Auto','自动','Auto','Auto']
-    ,['Светлая','Light','浅色','Hell','Claro']
-    ,['Тёмная','Dark','深色','Dunkel','Oscuro']
-    ,['Сменить тему сайта','Change website theme','切换网站主题','Website-Design ändern','Cambiar el tema del sitio']
-    ,['Сменить тему сайта: автоматически','Change website theme: automatic','切换网站主题：自动','Website-Design ändern: automatisch','Cambiar el tema del sitio: automático']
-    ,['Сменить тему сайта: светлая','Change website theme: light','切换网站主题：浅色','Website-Design ändern: hell','Cambiar el tema del sitio: claro']
-    ,['Сменить тему сайта: тёмная','Change website theme: dark','切换网站主题：深色','Website-Design ändern: dunkel','Cambiar el tema del sitio: oscuro']
-    ,['Перевести субтитры','Translate subtitles','翻译字幕','Untertitel übersetzen','Traducir subtítulos']
-    ,['Переводим субтитры…','Translating subtitles…','正在翻译字幕…','Untertitel werden übersetzt…','Traduciendo subtítulos…']
-    ,['Субтитры переведены','Subtitles translated','字幕已翻译','Untertitel übersetzt','Subtítulos traducidos']
-    ,['Не удалось перевести субтитры','Subtitle translation failed','字幕翻译失败','Untertitel konnten nicht übersetzt werden','No se pudieron traducir los subtítulos']
-    ,['Не удалось перевести эту часть лекции. Повторите попытку.','Could not translate this part of the lecture. Please try again.','无法翻译本段课程，请重试。','Dieser Teil der Vorlesung konnte nicht übersetzt werden. Bitte erneut versuchen.','No se pudo traducir esta parte de la clase. Inténtalo de nuevo.']
-    ,['Перевод занял слишком много времени. Повторите попытку.','Translation took too long. Please try again.','翻译耗时过长，请重试。','Die Übersetzung hat zu lange gedauert. Bitte erneut versuchen.','La traducción tardó demasiado. Inténtalo de nuevo.']
-    ,['Язык перевода','Translation language','翻译语言','Übersetzungssprache','Idioma de traducción']
-    ,['Авто','Auto','自动','Auto','Auto']
-    ,['Светлая','Light','浅色','Hell','Claro']
-    ,['Тёмная','Dark','深色','Dunkel','Oscuro']
-    ,['Перевод','Translation','翻译','Übersetzung','Traducción']
-    ,['Сменить тему сайта: автоматически','Change website theme: automatic','切换网站主题：自动','Website-Design ändern: automatisch','Cambiar el tema del sitio: automático']
-    ,['Автоматически','Automatic','自动','Automatisch','Automático']
-    ,['ЛОКАЛЬНАЯ ДЕМОНСТРАЦИЯ · РАБОТАЕТ БЕЗ ИНТЕРНЕТА','OFFLINE DEMO · WORKS WITHOUT INTERNET','离线演示 · 无需互联网','OFFLINE-DEMO · FUNKTIONIERT OHNE INTERNET','DEMO SIN CONEXIÓN · FUNCIONA SIN INTERNET']
-    ,['БИБЛИОТЕКА','LIBRARY','资料库','BIBLIOTHEK','BIBLIOTECA']
-    ,['Все лекции','All lectures','所有课程','Alle Vorlesungen','Todas las clases']
-    ,['Создать папку','Create folder','新建文件夹','Ordner erstellen','Crear carpeta']
-    ,['Офлайн-стенд','Offline demo','离线演示','Offline-Demo','Demo sin conexión']
-    ,['Данные примера в комплекте','Sample data included','包含示例数据','Beispieldaten enthalten','Datos de ejemplo incluidos']
-    ,['Как устроен проект','How it works','项目介绍','So funktioniert es','Cómo funciona']
-    ,['Добавить лекцию','Add a lecture','添加课程','Vorlesung hinzufügen','Añadir clase']
-    ,['Философия','Philosophy','哲学','Philosophie','Filosofía']
-    ,['ГОТОВА','READY','已完成','FERTIG','LISTA']
-    ,['Открыть лекцию','Open lecture','打开课程','Vorlesung öffnen','Abrir clase']
-    ,['Транскрипт','Transcript','转录文本','Transkript','Transcripción']
-    ,['Главы','Chapters','章节','Kapitel','Capítulos']
-    ,['Переместить в папку','Move to folder','移动到文件夹','In Ordner verschieben','Mover a carpeta']
-    ,['Личный кабинет','My account','个人账户','Mein Konto','Mi cuenta']
-    ,['В каждой лекции','Every lecture has','每堂课中都有','Jede Vorlesung hat','Cada clase tiene']
-    ,['ответ.','answer.','答案。','eine Antwort.','una respuesta.']
-    ,['Ищите идеи и объяснения, а не отдельные слова.','Search for ideas and explanations, not single words.','搜索观点和解释，而不只是单个词。','Suche nach Ideen und Erklärungen, nicht nach einzelnen Wörtern.','Busca ideas y explicaciones, no solo palabras sueltas.']
-    ,['Демо показывает, как устроен путь от видео до знаний.','See how a video becomes searchable knowledge.','查看视频如何转化为可搜索的知识。','Die Demo zeigt, wie aus Videos durchsuchbares Wissen wird.','La demo muestra cómo convertir vídeos en conocimiento consultable.']
-    ,['ЛОКАЛЬНЫЙ ПОИСК ПО ТЕКСТУ','LOCAL TEXT SEARCH','本地文本搜索','LOKALE TEXTSUCHE','BÚSQUEDA LOCAL DE TEXTO']
-    ,['Например: как Кант объясняет опыт?','For example: how does Kant explain experience?','例如：康德如何解释经验？','Zum Beispiel: Wie erklärt Kant Erfahrung?','Por ejemplo: ¿cómo explica Kant la experiencia?']
-    ,['Примеры: Кант · опыт · время','Examples: Kant · experience · time','示例：康德 · 经验 · 时间','Beispiele: Kant · Erfahrung · Zeit','Ejemplos: Kant · experiencia · tiempo']
-    ,['ПРИМЕР ДЛЯ ПОКАЗА','DEMO EXAMPLE','演示示例','DEMO-BEISPIEL','EJEMPLO DE DEMOSTRACIÓN']
-    ,['ЧТО ПРОИСХОДИТ','HOW IT WORKS','工作原理','SO FUNKTIONIERT ES','CÓMO FUNCIONA']
-    ,['От видео — к понятным моментам','From video to useful moments','从视频到关键片段','Vom Video zu wichtigen Momenten','Del vídeo a los momentos clave']
-    ,['Загрузка','Upload','上传','Hochladen','Carga']
-    ,['Распознавание','Transcription','语音识别','Transkription','Transcripción']
-    ,['Навигация','Navigation','导航','Navigation','Navegación']
-    ,['В рабочей версии добавляют видеофайл или ссылку на видео.','In the online version, add a video file or link.','在线版支持添加视频文件或链接。','In der Online-Version lassen sich Videodateien oder Links hinzufügen.','En la versión online puedes añadir un archivo o enlace de vídeo.']
-    ,['Для русской речи используется GigaAM-v3; английская, китайская, немецкая и испанская распознаются мультиязычной моделью. Язык можно определить автоматически, расшифровка сохраняет таймкоды.','Russian speech uses GigaAM-v3; English, Chinese, German and Spanish use a multilingual model. The video language can be detected automatically, and transcripts keep timestamps.','俄语语音使用 GigaAM-v3；英语、中文、德语和西班牙语使用多语言模型。系统可自动识别视频语言，转录保留时间戳。','Für Russisch kommt GigaAM-v3 zum Einsatz; Englisch, Chinesisch, Deutsch und Spanisch werden mit einem mehrsprachigen Modell erkannt. Die Videosprache lässt sich automatisch erkennen; das Transkript enthält Zeitmarken.','Para ruso se usa GigaAM-v3; inglés, chino, alemán y español utilizan un modelo multilingüe. El idioma del vídeo se detecta automáticamente y la transcripción conserva las marcas de tiempo.']
-    ,['Транскрипт, тематические главы и смысловой поиск помогают быстро найти нужный эпизод.','The transcript, topic chapters and semantic search help you find the right moment.','转录文本、主题章节和语义搜索可帮助快速定位片段。','Transkript, Themenkapitel und semantische Suche helfen, passende Stellen schnell zu finden.','La transcripción, los capítulos temáticos y la búsqueda semántica ayudan a encontrar el momento adecuado.']
-    ,['В этой офлайн-демонстрации загрузка выключена. Обработка видео доступна в основной версии на сервере.','Uploads are disabled in this offline demo. Video processing is available in the hosted version.','此离线演示不支持上传。视频处理请使用在线版本。','In dieser Offline-Demo sind Uploads deaktiviert. Die Videoverarbeitung ist in der Online-Version verfügbar.','Las cargas están desactivadas en esta demo sin conexión. El procesamiento está disponible en la versión online.']
-    ,['В этой папке нет лекций.','This folder has no lectures.','此文件夹中没有课程。','Dieser Ordner enthält keine Vorlesungen.','Esta carpeta no tiene clases.']
-    ,['Перевод субтитров требует серверной модели и доступен в основной версии сайта.','Subtitle translation requires the hosted translation model and is available on the main website.','字幕翻译需要服务器模型，请使用正式网站。','Die Untertitelübersetzung benötigt das Servermodell und ist auf der Hauptwebsite verfügbar.','La traducción de subtítulos requiere el modelo del servidor y está disponible en el sitio principal.']
-    ,['Краткий конспект','Short summary','简短摘要','Kurze Zusammenfassung','Resumen breve']
-    ,['Аватар','Avatar','头像','Avatar','Avatar']
-    ,['Без папки','No folder','未分类','Ohne Ordner','Sin carpeta']
-    ,['Проверьте подключение и попробуйте ещё раз.','Check your connection and try again.','请检查网络连接后重试。','Prüfe deine Verbindung und versuche es erneut.','Comprueba la conexión e inténtalo de nuevo.']
-    ,['Очередь обработки','Processing queue','处理队列','Verarbeitungswarteschlange','Cola de procesamiento']
-    ,['Лекция принята','Lecture queued','课程已加入队列','Vorlesung eingereiht','Clase en cola']
-    ,['Обрабатываем лекцию','Processing lecture','正在处理课程','Vorlesung wird verarbeitet','Procesando la clase']
-    ,['В очереди на обработку…','Waiting to be processed…','等待处理…','Wartet auf die Verarbeitung…','En cola para procesar…']
+Y��x-���jם��i��+��j[h��ܢ��ێ:�:-jZ.����)޳R�T���wVvR7v�F6���r�W6W"7WƖVB�V7GW&R6��FV�B7F�2���G27��V���wVvR��𢂂�����6��7B��&�Ɨ�R�f�VR��7G&��r�f�VR��&W�6R���2��r�rr��G&�҂���6��7B��6�W2���'S���}
+�}����-]M]�s�}
+�}����-]M]�r�}	}	�		�	�
+�(	B	�		�	M	]	�
+�s�}	}	�		�	�
+�(	B	�		�	M	]	�
+�r�}	"�mM���]�m��s�}	"�mM���]�m��r�}]-�s�}]-�r�}�--]"�s�}�--]"�r�}	���-R�M]������]�����R�-M]����R��-�s�}	���-R�M]������]�����R�-M]����R��-�r�}	�����m]��=m������]�"�����m]�}�-���s�}	�����m]��=m������]�"�����m]�}�-���r�}	�m��-R��=�2�s�}	�m��-R��=�2�r�}}-����-��M]�s�}}-����-��M]�r�}�M]���M]�s�}�M]���M]�r�}
+	]	�		�
+-	�
+}	]
+	�	�	�	�	�	�
+	�s�}
+	]	�		�
+-	�
+}	]
+	�	�	�	�	�	�
+	�r�}	��]"��-]�=�-�-���]�m���s�}	��]"��-]�=�-�-���]�m���r�}	��-�s�}	��-�r�}	-	
+�			�		�	�	�
+-	]	�	s�}	-	
+�			�		�	�	�
+-	]	�	r�}	�]�m��s�}	�]�m��r�}	M�-�-��]�m��s�}	M�-�-��]�m��r�}	�}��-R�]-���]�m��s�}	�}��-R�]-���]�m��r�}	}==}�-R-�M]�(	B����M=�-�-��-����"�=�-������-�������s�}	}==}�-R-�M]�(	B����M=�-�-��-����"�=�-������-�������r�}	�	�
+m	]	�	}	�
+�	�
+=
+	�	�	-	�
+�	�
+	�	�	�
+�	}	�	-		�	�
+�s�}	�	�
+m	]	�	}	�
+�	�
+=
+	�	�	-	�
+�	�
+	�	�	�
+�	}	�	-		�	�
+�r�}
+�}��]}�"-�M]�s�}
+�}��]}�"-�M]�r�}	-�]�-R�}������-���=�-��""-�M]��
+�}����-]M]��]��]-��-M]�����s�}	-�]�-R�}������-���=�-��""-�M]��
+�}����-]M]��]��]-��-M]�����r�}	�}-��R�]�m��s�}	�}-��R�]�m��r�}	���M���]�m��s�}	���M���]�m��r�~�Ȳ	��-����s�~�Ȳ	��-����r�}	]r��������-������-]��s�}	]r��������-������-]��r�}	�-�]�s�}	�-�]�r�}
+�}M-���-������M��}2=M]"�]]�]��"�]�s�}
+�}M-���-������M��}2=M]"�]]�]��"�]�r�}	�]]-��-R-�M]��Ms�}	�]]-��-R-�M]��Mr�}���s�}���r�}-�]�-RM��s�}-�]�-RM��r�}
+���s�}
+���r�}
+M��-�M]�s�}
+M��-�M]�r�}
+����-�M]�s�}
+����-�M]�r�}	�}]--�-�M]�s�}	�}]--�-�M]�r�}	�=}�]RM�-=���Rs�}	�=}�]RM�-=���Rr�}	�}-���-�2s�}	�}-���-�2r�}	�-�]��-�}==}�2s�}	�-�]��-�}==}�2r�}	��}������]"s�}	��}������]"r�}	�	�
+}	�	�	R	�
+	�
+
+-
+		�
+
+-	-	�s�}	�	�
+}	�	�	R	�
+	�
+
+-
+		�
+
+-	-	�r�}
+-�}-�]��]�s�}
+-�}-�]��]�r�}	-��M�-R�}-���-��-�-������-]�2�]�m���s�}	-��M�-R�}-���-��-�-������-]�2�]�m���r�}	-��-�s�}	-��-�r�}
+�}M-���=�"s�}
+�}M-���=�"r�}	��=��s�}	��=��r�}	����s�}	����r�}	--]M�-R��=�������-�]=����]-�s�}	--]M�-R��=�������-�]=����]-�r�}	-	
+�		�	�	
+=	�
+"s�}	-	
+�		�	�	
+=	�
+"r�}
+-��=�-�s�}
+-��=�-�r�}
+�]��-�s�}
+�]��-�r�}	}==}�-�-�M�-�s�}	}==}�-�-�M�-�r�}�]�m��s�}�]�m��r�}=�-�-�s�}=�-�-�r�}	�}�]��-�����s�}	�}�]��-�����r�}	-��-��r��=�-s�}	-��-��r��=�-r�}	�	]
+	]	�	]
+
+-	�
+-
+�	�	]	�
+m	�
+�s�}	�	]
+	]	�	]
+
+-	�
+-
+�	�	]	�
+m	�
+�r�}	�]]�]-�-��]�m��s�}	�]]�]-�-��]�m��r�}	-�]�-R���2����}M�-R��-=��s�}	-�]�-R���2����}M�-R��-=��r�}	����}M-���-=����2s�}	����}M-���-=����2r�}
+�}M-���]]�]-�-�s�}
+�}M-���]]�]-�-�r�}	�=�-�]��Rs�}	�=�-�]��Rr�}	�-����]]�rs�}	�-����]]�rr�}	���-�-��]]�r�=�-�s�}	���-�-��]]�r�=�-�r�}	�]]��}�-�]}�s�}	�]]��}�-�]}�r�}
+-����"s�}
+-����"r�}	=�-�s�}	=�-�r�}
+=M��-��]�m��s�}
+=M��-��]�m��r�}	M����-��-��Rs�}	M����-��-��Rr�}	��=�-�s�}	��=�-�r�}	-�M]��]-]Rs�}	-�M]��]-]Rr�}	�-����s�}	�-����r�}
+�}M-����2s�}
+�}M-����2r�}	��-����s�}	��-����r�}
+�-��]�m��-�]-Rs�}
+�-��]�m��-�]-Rr�}	M�-R���R���-��R�}-��R�	�]�m����m��=M]"�]]�]�-��r�-�}���mM��}����s�}	M�-R���R���-��R�}-��R�	�]�m����m��=M]"�]]�]�-��r�-�}���mM��}����r�}	�}-��R����s�}	�}-��R����r�}
+�}M-����2s�}
+�}M-����2r�}	�����]�m����s�}	�����]�m����p����V���}
+�}����-]M]�s�t��FW&f6R��wVvRr�}	}	�		�	�
+�(	B	�		�	M	]	�
+�s�t���t�TDtR(	Bd�T�Br�}	"�mM���]�m��s�tWfW'��V7GW&R�2r�}]-�s�v�r�}�--]"�s�v�7vW"�r�}	���-R�M]������]�����R�-M]����R��-�s�u6V&6�f�"�FV2�BW���F���2���B�W7Bv�&G2�r�}	�����m]��=m������]�"�����m]�}�-���s�uv^(	���f��BF�R&�v�B���V�B�B�V���RV�FW'7F�B�r�}	�m��-R��=�2�s�t6Ɩ6�F�R�v�f�W"r�}}-����-��M]�s�wF�f��B��FVr�}�M]���M]�s�v�FVf�V�Br�}
+	]	�		�
+-	�
+}	]
+	�	�	�	�	�	�
+	�s�u4T��D�24T$4�r�}	��]"��-]�=�-�-���]�m���s�u6V&6�W2��&�6W76VB�V7GW&W2r�}	��-�s�u6V&6�r�}	-	
+�			�		�	�	�
+-	]	�	s�u��U"Ĕ%$%�r�}	�]�m��s�t�V7GW&W2r�}	M�-�-��]�m��s�tFB�V7GW&Rr�}	�}��-R�]-���]�m��s�u7F'Bv�F���W"f�'7B�V7GW&Rr�}	}==}�-R-�M]�(	B����M=�-�-��-����"�=�-������-�������s�uW��Bf�FV�F�7&VFRG&�67&�B�6�FW'2�B6V��F�26V&6��r�}	�	�
+m	]	�	}	�
+�	�
+=
+	�	�	-	�
+�	�
+	�	�	�
+�	}	�	-		�	�
+�s�tĔ4T�4R�BDU$�2�bU4Rr�}
+�}��]}�"-�M]�s�u7��V���wVvR��F�Rf�FV�r�}	-�]�-R�}������-���=�-��""-�M]��
+�}����-]M]��]��]-��-M]�����s�t6���6RF�R��wVvR7��V���F�Rf�FV����FW&f6R��wVvR�26V�V7FVB6W&FVǒ�r�}	�}-��R�]�m��s�t�V7GW&RF�F�Rr�}	���M���]�m��s�t�V7GW&Rf��FW"r�~�Ȳ	��-����s�~�Ȳ�Wrf��FW"r�}	]r��������-������-]��s�t��f��FW"����Ɩ'&'��r�}	�-�]�s�t6�6V�r�}
+�}M-���-������M��}2=M]"�]]�]��"�]�s�t�Wrf��FW"v���&R7&VFVB�BF�Rf��R��fVB��F��B�r�}	�]]-��-R-�M]��Ms�tG&�f�FV��W&Rr�}���s�v�"r�}-�]�-RM��s�v6���6Rf��Rr�}
+���s�tƖ�r�}
+M��-�M]�s�uf�FV�f��Rr�}
+����-�M]�s�uf�FV�Ɩ�r�}	�}]--�-�M]�s�uf�FV�VƗG�r�}	�=}�]RM�-=���Rs�t&W7Bf��&�Rr�}	�}-���-�2s�u7F'B&�6W76��rr�}	�-�]��-�}==}�2s�t6�6V�W��Br�}	��}������]"s�tג66�V�Br�}	�	�
+}	�	�	R	�
+	�
+
+-
+		�
+
+-	-	�s�u��U"54Rr�}
+-�}-�]��]�s�uvV�6��R&6�r�}	-��M�-R�}-���-��-�-������-]�2�]�m���s�u6�v���F��V���W"�V7GW&RƖ'&'��r�}	-��-�s�u6�v���r�}
+�}M-���=�"s�t7&VFR66�V�Br�}	��=��s�uW6W&��Rr�}	����s�u77v�&Br�}	--]M�-R��=�������-�]=����]-�s�tV�FW"��W"66�V�BW6W&��R�B77v�&B�r�}	-	
+�		�	�	
+=	�
+"s�u��U"44�T�Br�}
+-��=�-�s�u��W"��F��2r�}
+�]��-�s�u6fRr�}	}==}�-�-�M�-�s�uW��B��W"��F�r�}�]�m��s�v�V7GW&W2r�}=�-�-�s�w&VG�r�}	�}�]��-�����s�t6��vR77v�&Br�}	-��-��r��=�-s�u6�v��WBr�}	�	]
+	]	�	]
+
+-	�
+-
+�	�	]	�
+m	�
+�s�t��dR�T5EU$Rr�}	�]]�]-�-��]�m��s�t��fR�V7GW&Rr�}	-�]�-R���2����}M�-R��-=��s�t6���6Rf��FW"�"7&VFR��R�r�}	����}M-���-=����2s�t�"7&VFR�Wrf��FW"r�}
+�}M-���]]�]-�-�s�t7&VFR�B��fRr�}	�=�-�]��Rs�t�WFƖ�Rr�}	�-����]]�rs�u7V��'�r�}	���-�-��]]�r�=�-�s�u&Vg&W6�7V��'��B6�FW'2r�}	�]]��}�-�]}�s�u&R�G&�67&�&R7VV6�r�}
+-����"s�uG&�67&�Br�}	=�-�s�t6�FW'2r�}
+=M��-��]�m��s�tFV�WFR�V7GW&Rr�}	M����-��-��Rs�tF֖�7G&F���r�}	��=�-�s�t66�V�G2r�}	-�M]��]-]Rs�u6W'fW"f�FV�2r�}	�-����s�u6WGF��w2r�}
+�}M-����2s�t7&VFRf��FW"r�}	��-����s�t�Wrf��FW"r�}
+�-��]�m��-�]-Rs�tw&�W��W"�V7GW&W2r�}	M�-R���R���-��R�}-��R�	�]�m����m��=M]"�]]�]�-��r�-�}���mM��}����s�tv�fRF�Rf��FW"6��'B��R���R6���fR�V7GW&W2��F��Bg&��V6��V7GW&R6&B�r�}	�}-��R����s�tf��FW"��Rr�}
+�}M-����2s�t7&VFRf��FW"r�}	�����]�m����s�t�V7GW&Rf��FW'2p���������}
+�}����-]M]�s�~yXΙ�.��ފ�r�}	}	�		�	�
+�(	B	�		�	M	]	�
+�s�~y�^��n���[{.h��X�r�}	"�mM���]�m��s�~j��Z.���K�ޘ;�iȒr�}]-�s�rr�}�--]"�s�~z�Nj�8"r�}	���-R�M]������]�����R�-M]����R��-�s�~i	�{J.�x.x+�Y(Ίz>�x���Έ�K��X��i��X�^K�����8"r�}	�����m]��=m������]�"�����m]�}�-���s�~h�K��KɮZ�K��y��X[>x�~j�^���[��X��h*�yn�z>8"r�}	�m��-R��=�2�s�~x+�X{�iK�ZJ~�Y�r�}}-����-��M]�s�~i�^h��x.x+�r�}�M]���M]�s�~[{.h��X��x.x+�r�}
+	]	�		�
+-	�
+}	]
+	�	�	�	�	�	�
+	�s�~���K��i	�{J"r�}	��]"��-]�=�-�-���]�m���s�~i	�{J.h�iȞ[{.ZHNyny�N���z��r�}	��-�s�~i	�{J"r�}	-	
+�			�		�	�	�
+-	]	�	s�~h*�y�N�XNii�[�2r�}	�]�m��s�~���z��r�}	M�-�-��]�m��s�~k{�X����z��r�}	�}��-R�]-���]�m��s�~K��z��K�Z.���[�Zx�r�}	}==}�-R-�M]�(	B����M=�-�-��-����"�=�-������-�������s�~K��K��xn�)���X�>X��yI�h����[�^8z���.Y(Ί��K��i	�{J.8"r�}	�	�
+m	]	�	}	�
+�	�
+=
+	�	�	-	�
+�	�
+	�	�	�
+�	}	�	-		�	�
+�s�~��X����K��K��yJ�i�j��r�}
+�}��]}�"-�M]�s�~�xn�)��ޙ�>��ފ�r�}	-�]�-R�}������-���=�-��""-�M]��
+�}����-]M]��]��]-��-M]�����s�~��~��h���xn�)K��y�N��ޙ�>��ފ�8.yXΙ�.��ފ�X�^x�Ί��{��8"r�}	�}-��R�]�m��s�~���z��Y�z{r�}	���M���]�m��s�~���z��ih~K�nZK�r�~�Ȳ	��-����s�~�Ȳik[��ih~K�nZK�r�}	]r��������-������-]��s�~izih~K�nZK��ȎK���XNii�[�>�Ȓr�}	�-�]�s�~X�nkh�r�}
+�}M-���-������M��}2=M]"�]]�]��"�]8"s�~[nX��[��ih~K�nZK�[�nz{�X��j�Nih~K�n8"r�}	�]]-��-R-�M]��Ms�~[n�xn�)h�nX�j�NZHBr�}���s�~h�br�}-�]�-RM��s�~��h��ih~K�br�}
+���s�~�;�h�Rr�}
+M��-�M]�s�~�xn�)ih~K�br�}
+����-�M]�s�~�xn�)�;�h�Rr�}	�}]--�-�M]�s�~�xn�)yK��J�r�}	�=}�]RM�-=���Rs�~i�K�>X��yJ�r�}	�}-���-�2s�~[�Zx�ZHNybr�}	�-�]��-�}==}�2s�~X�nkh�K��K�r�}	��}������]"s�~K��K���Jnh�rr�}	�	�
+}	�	�	R	�
+	�
+
+-
+		�
+
+-	-	�s�~K��K��z���{Br�}
+-�}-�]��]�s�~j�.���Y��i�Rr�}	-��M�-R�}-���-��-�-������-]�2�]�m���s�~y��[�^K�^h�>[�h*�y�N���z���XNii�[�>8"r�}	-��-�s�~y��[�Rr�}
+�}M-���=�"s�~X��[���Jnh�rr�}	��=��s�~yJ�h�~Y�r�}	����s�~Z�nzr�}	--]M�-R��=�������-�]=����]-�s�~��>XZ^�Jnh�~yJ�h�~Y�Y(�Z�nz8"r�}	-	
+�		�	�	
+=	�
+"s�~h*�y�N�Jnh�rr�}
+-��=�-�s�~�z�Z�K��Z�~j��r�}
+�]��-�s�~K��Zقr�}	}==}�-�-�M�-�s�~K��K�ZKNX8�r�}�]�m��s�~Z.���z��r�}=�-�-�s�~[{.Z��h�r�}	�}�]��-�����s�~i�NiK�Z�nzr�}	-��-��r��=�-s�~�X{��Jnh�rr�}	�	]
+	]	�	]
+
+-	�
+-
+�	�	]	�
+m	�
+�s�~z{�X�����z��r�}	�]]�]-�-��]�m��s�~z{�X�����z��r�}	-�]�-R���2����}M�-R��-=��s�~��h��ih~K�nZK�h�nik[��ih~K�nZK�8"r�}	����}M-���-=����2s�~h�nik[��ih~K�nZK�r�}
+�}M-���]]�]-�-�s�~X��[��[�nz{�X��r�}	�=�-�]��Rs�~y��[�Rr�}	�-����]]�rs�~i��hr�}	���-�-��]]�r�=�-�s�~i�Niki��hY(�z���"r�}	�]]��}�-�]}�s�~�x�ik���[�^��ޙ�2r�}
+-����"s�~���[�^ih~i��r�}	=�-�s�~z���"r�}
+=M��-��]�m��s�~X���N���z��r�}	M����-��-��Rs�~z�ybr�}	��=�-�s�~�Jnh�rr�}	-�M]��]-]Rs�~i��X�Y���xn�)r�}	�-����s�~���{��r�}
+�}M-����2s�~ik[��ih~K�nZK�r�}	��-����s�~ik[��ih~K�nZK�r�}
+�-��]�m��-�]-Rs�~i[Nyn���z��r�}	M�-R���R���-��R�}-��R�	�]�m����m��=M]"�]]�]�-��r�-�}���mM��}����s�~K��ih~K�nZK����{��z�y��Y�z{���K��Y�X��K����z��X�x�~z{�X�����z��8"r�}	�}-��R����s�~ih~K�nZK�Y�z{r�}
+�}M-����2s�~X��[��ih~K�nZK�r�}	�����]�m����s�~���z��ih~K�nZK�p����FS���}
+�}����-]M]�s�t�&W&f�:F6�V�7&6�Rr�}	}	�		�	�
+�(	B	�		�	M	]	�
+�s�ut�54T�(	BtTeT�DT�r�}	"�mM���]�m��s�t���VFW"f�&�W7V�rv�'BW2r�}]-�s�vV��Rr�}�--]"�s�t�Gv�'B�r�}	���-R�M]������]�����R�-M]����R��-�s�u7V6�V�6�R�6��FVV�V�BW&��:G'V�vV�7FGB�6�V��V��V�|;g'FW&��r�}	�����m]��=m������]�"�����m]�}�-���s�uv�"�V�vV�FV�76V�FV����V�BV�B�V�fV�&V��fW'7L:F�F�2�r�}	�m��-R��=�2�s�t�Ɩ6�V�6�RVbF�R�WR�r�}}-����-��M]�s�wV�V��R�FVR�Rf��FV�r�}�M]���M]�s�t�FVRvVgV�FV�r�}
+	]	�		�
+-	�
+}	]
+	�	�	�	�	�	�
+	�s�u4T��D�44�R5T4�Rr�}	��]"��-]�=�-�-���]�m���s�tGW&6�7V6�B��RfW&&&V�FWFV�f�&�W7V�vV�r�}	��-�s�u7V6�V�r�}	-	
+�			�		�	�	�
+-	]	�	s�t��$R$�$Ĕ�D�T�r�}	�]�m��s�uf�&�W7V�vV�r�}	M�-�-��]�m��s�uf�&�W7V�r���Vl;�vV�r�}	�}��-R�]-���]�m��s�t&Vv���V�6�R֗B��&W"W'7FV�f�&�W7V�rr�}	}==}�-R-�M]�(	B����M=�-�-��-����"�=�-������-�������s�t�FV�6�RV��f�FV���6��V�G&�6�&�B���FV�V�B6V��F�66�R7V6�R�RW'7FV��V��r�}	�	�
+m	]	�	}	�
+�	�
+=
+	�	�	-	�
+�	�
+	�	�	�
+�	}	�	-		�	�
+�s�tĕ�T�T�B�UE�T�u4$TD��uT�tT�r�}
+�}��]}�"-�M]�s�tvW7&�6�V�R7&6�R��f�FV�r�}	-�]�-R�}������-���=�-��""-�M]��
+�}����-]M]��]��]-��-M]�����s�u|:F��V�6�RF�R7&6�RFW2f�FV�2�F�R�&W&f�:F6�V�7&6�Rv�&B6W&BV��vW7FV��B�r�}	�}-��R�]�m��s�uf�&�W7V�w7F�FV�r�}	���M���]�m��s�uf�&�W7V�w6�&F�W"r�~�Ȳ	��-����s�~�Ȳ�WVW"�&F�W"r�}	]r��������-������-]��s�t�V���&F�W"��WF&�&Ɩ�F�V��r�}	�-�]�s�t&'&V6�V�r�}
+�}M-���-������M��}2=M]"�]]�]��"�]�s�tV���WVW"�&F�W"v�&BW'7FV��BV�BF�RFFV�F�'F���fW'66��&V��r�}	�]]-��-R-�M]��Ms�uf�FV���W"&�VvV�r�}���s�v�FW"r�}-�]�-RM��s�tFFV�W7|:F��V�r�}
+���s�tƖ�r�}
+M��-�M]�s�uf�FV�FFV�r�}
+����-�M]�s�uf�FV�Ɩ�r�}	�}]--�-�M]�s�uf�FV�VƗL:GBr�}	�=}�]RM�-=���Rs�t&W7FRfW&l;�v&&Rr�}	�}-���-�2s�ufW&&&V�GV�r7F'FV�r�}	�-�]��-�}==}�2s�uW��B&'&V6�V�r�}	��}������]"s�t�V�����F�r�}	�	�
+}	�	�	R	�
+	�
+
+-
+		�
+
+-	-	�s�t��"$U$T�4�r�}
+-�}-�]��]�s�uv��ƶ���V��W,;�6�r�}	-��M�-R�}-���-��-�-������-]�2�]�m���s�t�V�FV�6�R6�6���V���&Rf�&�W7V�w6&�&Ɩ�F�V��R;fff�V��r�}	-��-�s�t��V�FV�r�}
+�}M-���=�"s�t���F�W'7FV��V�r�}	��=��s�t&V�WG�W&��Rr�}	����s�u77v�'Br�}	--]M�-R��=�������-�]=����]-�s�tvV&V�6�R��&V�&V�WG�W&��V�V�B��"77v�'BV���r�}	-	
+�		�	�	
+=	�
+"s�t��"���D�r�}
+-��=�-�s�tV�vV�R��F��V�r�}
+�]��-�s�u7V�6�W&�r�}	}==}�-�-�M�-�s�tV�vV�W2f�F���6��FV�r�}�]�m��s�uf�&�W7V�vV�r�}=�-�-�s�vfW'F�rr�}	�}�]��-�����s�u77v�'B:F�FW&�r�}	-��-��r��=�-s�t&�V�FV�r�}	�	]
+	]	�	]
+
+-	�
+-
+�	�	]	�
+m	�
+�s�ud�$�U5T�rdU%44��T$T�r�}	�]]�]-�-��]�m��s�uf�&�W7V�rfW'66��V&V�r�}	-�]�-R���2����}M�-R��-=��s�u|:F��V�6�RV��V��&F�W"�FW"W'7FV��V�6�RV��V��WVV��r�}	����}M-���-=����2s�t�FW"�WVV��&F�W"W'7FV��V�r�}
+�}M-���]]�]-�-�s�tW'7FV��V�V�BfW'66��V&V�r�}	�=�-�]��Rs�tvƖVFW'V�rr�}	�-����]]�rs�u�W6��V�f77V�rr�}	���-�-��]]�r�=�-�s�u�W6��V�f77V�rV�B��FV��GVƗ6�W&V�r�}	�]]��}�-�]}�s�u7&6�RW&�WWBW&�V��V�r�}
+-����"s�uG&�6�&�Br�}	=�-�s�t��FV�r�}
+=M��-��]�m��s�uf�&�W7V�r�;g66�V�r�}	M����-��-��Rs�tF֖�7G&F���r�}	��=�-�s�t���FV�r�}	-�M]��]-]Rs�u6W'fW'f�FV�2r�}	�-����s�tV��7FV��V�vV�r�}
+�}M-����2s�t�&F�W"W'7FV��V�r�}	��-����s�t�WVW"�&F�W"r�}
+�-��]�m��-�]-Rs�uf�&�W7V�vV�6��V��r�}	M�-R���R���-��R�}-��R�	�]�m����m��=M]"�]]�]�-��r�-�}���mM��}����s�tvV&V�6�RFV��&F�W"V��V��W'�V���V��f�&�W7V�vV��76V�6�6�7:GFW";�&W"��&R�'FV�fW'66��V&V��r�}	�}-��R����s�t�&F�W&��Rr�}
+�}M-����2s�t�&F�W"W'7FV��V�r�}	�����]�m����s�uf�&�W7V�w6�&F�W"p����W3���}
+�}����-]M]�s�t�F���FR���FW&f�r�}	}	�		�	�
+�(	B	�		�	M	]	�
+�s�t4���4�ԔT�D�(	BT�4��E$D�r�}	"�mM���]�m��s�t6F6�6RF�V�RV�r�}]-�s�rr�}�--]"�s�w&W7VW7F�r�}	���-R�M]������]�����R�-M]����R��-�s�t'W66�FV2�W�Ɩ66���W2���6����'&27VV�F2�r�}	�����m]��=m������]�"�����m]�}�-���s�tV�6��G&&V��2V����V�F�FV7VF��FR�VF&V��2V�FV�FW&���r�}	�m��-R��=�2�s�uV�6��Wr�}}-����-��M]�s�w&V�6��G&"V��FVr�}�M]���M]�s�v�FVV�6��G&Fr�}
+	]	�		�
+-	�
+}	]
+	�	�	�	�	�	�
+	�s�t,9�5TTD4T�8�D�4r�}	��]"��-]�=�-�-���]�m���s�t'W66V�F�F2�26�6W2&�6W6F2r�}	��-�s�t'W66"r�}	-	
+�			�		�	�	�
+-	]	�	s�uER$�$Ĕ�DT4r�}	�]�m��s�t6�6W2r�}	M�-�-��]�m��s�t;F�"6�6Rr�}	�}��-R�]-���]�m��s�tV��W�6��GR&��W&6�6Rr�}	}==}�-R-�M]�(	B����M=�-�-��-����"�=�-������-�������s�u7V&RV�l:�FV�&7&V"�G&�67&�6�;6����26:�GV��2��,;�7VVF6V�:�F�6�r�}	�	�
+m	]	�	}	�
+�	�
+=
+	�	�	-	�
+�	�
+	�	�	�
+�	}	�	-		�	�
+�s�tĔ4T�4��4��D�4���U2DRU4�r�}
+�}��]}�"-�M]�s�t�F����&�F�V�V�l:�FV�r�}	-�]�-R�}������-���=�-��""-�M]��
+�}����-]M]��]��]-��-M]�����s�tVƖvRV��F����&�F�V�V�l:�FV��V��F���FR���FW&f�6R6��f�wW&�"6W&F��r�}	�}-��R�]�m��s�uL:�GV��FR�6�6Rr�}	���M���]�m��s�t6'WFFR�6�6Rr�~�Ȳ	��-����s�~�Ȳ�VWf6'WFr�}	]r��������-������-]��s�u6��6'WF�&�&Ɩ�FV6&��6�r�}	�-�]�s�t6�6V�"r�}
+�}M-���-������M��}2=M]"�]]�]��"�]�s�u6R7&V,:V�6'WF�VWf�V�&6��f�6R��fW,:V���r�}	�]]-��-R-�M]��Ms�t'&7G&V�l:�FV�\:�r�}���s�v�r�}-�]�-RM��s�vVƖvRV�&6��f�r�}
+���s�tV��6Rr�}
+M��-�M]�s�t&6��f�FRl:�FV�r�}
+����-�M]�s�tV��6RFV�l:�FV�r�}	�}]--�-�M]�s�t6ƖFBFV�l:�FV�r�}	�=}�]RM�-=���Rs�t��V��"F�7��&�Rr�}	�}-���-�2s�t��6�"&�6W6֖V�F�r�}	�-�]��-�}==}�2s�t6�6V�"6&vr�}	��}������]"s�t֒7VV�Fr�}	�	�
+}	�	�	R	�
+	�
+
+-
+		�
+
+-	-	�s�uERU54��r�}
+-�}-�]��]�s�uFRF��2�&�V�fV�Fr�}	-��M�-R�}-���-��-�-������-]�2�]�m���s�t��6�6W6�;6�&'&�"GR&�&Ɩ�FV6FR6�6W2�r�}	-��-�s�t��6�"6W6�;6�r�}
+�}M-���=�"s�t7&V"7VV�Fr�}	��=��s�uW7V&��r�}	����s�t6��G&6\;r�}	--]M�-R��=�������-�]=����]-�s�t��G&�GV6RV�W7V&����6��G&6\;FRGR7VV�F�r�}	-	
+�		�	�	
+=	�
+"s�uER5TT�Dr�}
+-��=�-�s�uGW2��6��W2r�}
+�]��-�s�twV&F"r�}	}==}�-�-�M�-�s�u7V&�"V�f�F�r�}�]�m��s�v6�6W2r�}=�-�-�s�vƗ7F2r�}	�}�]��-�����s�t6�&�"6��G&6\;r�}	-��-��r��=�-s�t6W'&"6W6�;6�r�}	�	]
+	]	�	]
+
+-	�
+-
+�	�	]	�
+m	�
+�s�t��dU"4�4Rr�}	�]]�]-�-��]�m��s�t��fW"6�6Rr�}	-�]�-R���2����}M�-R��-=��s�tVƖvRV�6'WF�7&VV��VWf�r�}	����}M-���-=����2s�t�7&V"V�6'WF�VWfr�}
+�}M-���]]�]-�-�s�t7&V"���fW"r�}	�=�-�]��Rs�|8��F�6Rr�}	�-����]]�rs�u&W7V�V�r�}	���-�-��]]�r�=�-�s�t7GVƗ�"&W7V�V��6:�GV��2r�}	�]]��}�-�]}�s�uf��fW"G&�67&�&�"r�}
+-����"s�uG&�67&�6�;6�r�}	=�-�s�t6:�GV��2r�}
+=M��-��]�m��s�tVƖ֖�"6�6Rr�}	M����-��-��Rs�tF֖�7G&6�;6�r�}	��=�-�s�t7VV�F2r�}	-�M]��]-]Rs�ul:�FV�2FV�6W'f�F�"r�}	�-����s�t6��f�wW&6�;6�r�}
+�}M-����2s�t7&V"6'WFr�}	��-����s�t�VWf6'WFr�}
+�-��]�m��-�]-Rs�tw'WGW26�6W2r�}	M�-R���R���-��R�}-��R�	�]�m����m��=M]"�]]�]�-��r�-�}���mM��}����s�u��V����'&R6�'F��6'WF�FW7\:�2�G,:2��fW"6�6W2FW6FR7Rf�6��r�}	�}-��R����s�t���'&RFR�6'WFr�}
+�}M-����2s�t7&V"6'WFr�}	�����]�m����s�t6'WF2FR6�6W2p�ТӰ�6��7BW�G&&�w3հ��}		�		�	�	�
+-	]	�	r�tĔ%$%�r�~Y��K�n�hbr�t$�$Ĕ�D�T�r�t$�$Ĕ�DT4u����}	-R�]�m��r�t���V7GW&W2r�~h�iȞ���z��r�t��Rf�&�W7V�vV�r�uF�F2�26�6W2u����}
+-]�=-��]��r�t6���6R�V�Rr�~iKn�[~���X�Rr�t�V�;�V���V�r�t6��G&W"�V�;�u����}
+}-]�=-��]��r�tW��B�V�Rr�~[^[����X�Rr�t�V�;�W6��V�r�tW��F�"�V�;�u����}	��=-�]���]�"r�t��r�Bv�&�2r�~��y��K��{��r�u6�gV�F���W'BF2&��V�Br�t<;6��gV�6���u����}	����]�	--]M]��R"������R�=}]��Rr�tf�"W���R���G&�GV7F���F��6���R�V&��rr�~K�Zh.�ɮiˮY��Z�nK�Z�Ί�r�u�V�&V�7�VâV��l;Ƈ'V�r���66���V��W2�W&�V�r�u�"V�V�����G&�GV66�;6��&V�F���RWF��:F�6�u����}	��MM]m�-�-���UGV&R�d�	-�M]��'WGV&R����=�R��-M����B�F��	M�-=���R}]�]���}-��"�"�����r�u��UGV&R�d�f�FV��'WGV&R�B���B�F��Ff�&�2&R7W�'FVB�f��&�R&W6��WF���2FWV�B��F�Rf�FV��r�~iJ�h���UGV&^8d�f�FV�8'WGV&RY(Ί�ZI��B�F�[�>X�8.X��yJ�k�^i�[�nX�nXk>K��xn�)8"r�u��UGV&R�d�f�FV��'WGV&RV�Bf�V�R�B�F���GFf�&�V�vW&FV�V�FW'7L;�G�B�F�RfW&l;�v&&V�Vf�;g7V�vV��:F�vV�f��f�FV�"�r�u6RF֗FV���UGV&R�d�f�FV��'WGV&R��V6�2�Ff�&�2FR�B�F���&W6��V6�;6�F�7��&�RFWV�FRFV�l:�FV��u����}	�]]�]-�-�"���2r�t��fRF�f��FW"r�~z{�X��X�ih~K�nZK�r�t���&F�W"fW'66��V&V�r�t��fW"6'WFu����}
+�}�r�tg&��F�R&Vv����rr�~K��ZKN[�Zx�r�uf���f�r�r�tFW6FRV�&��6���u����}	=	�
+-	�	-	r�u$TE�r�~[{.[{��r�t$U$T�Br�tĕ5Du����}	�
+�	�		�	r�tU%$�"r�~�I����r�tdT��U"r�tU%$�"u����}	�	
+			�
+-	�	r�u$�4U54��rr�~ZHNynK��r�t��$T$$T�ET�rr�u$�4U4�D�u����}	=	�
+-	�	-	�
+-
+
+�r�uTUTTBr�~h�.���K��r�t��t%DU44���tRr�tT�4��u����}�=}�]RM�-=���Rr�v&W7Bf��&�Rr�~i�K�>X��yJ�r�v&W7FRfW&l;�v&&Rr�v��V��"F�7��&�Ru����}	�-�������]�"r�u6��'B��FW2r�~z��hz�N��r�t�W'�R��F��V�r�tV�FW2'&WfW2u����}	�-����]]�rr�u6��'B7V��'�r�~z�y��i��hr�t�W'�R�W6��V�f77V�rr�u&W7V�V�'&WfRu����}	}==m]�-����.(
+br�t��F��rG&�67&�N(
+br�~j�>YʎX���ދ��[�^ih~i��(
+br�uG&�6�&�Bv�&BvV�FV�(
+br�t6&v�F�G&�67&�6�;6�(
+bu����}
+}M]�����-�-����R��-���r�t6�FW'2v���V"gFW"&�6W76��r�r�~ZHNynZ��h�Y�[ni��zK�z���.8"r�t��FV�W'66�V��V��6�FW"fW&&&V�GV�r�r�t��26:�GV��2&V6W,:��FW&֖�"V�&�6W6֖V�F��u����}
+}M]���R��M]���r�t��6�FW'2f�V�B�r�~iʮh��X�z���.8"r�t�V��R��FV�vVgV�FV��r�t��6RV�6��G&&��6:�GV��2�u����}
+�--��]�(
+br�t7&VF��~(
+br�~j�>YʎyI�h�(
+br�uv�&BW'7FV��N(
+br�t7&V�F�(
+bu����}	=�-�-�r�tF��Rr�~Z��h�r�tfW'F�rr�tƗ7F�u����}
+�]��]�(
+br�u6f��~(
+br�~j�>YʎK��Zَ(
+br�uv�&BvW7V�6�W'N(
+br�twV&F�F�(
+bu����}	--�]��r�tfF"6fVBr�~ZKNX8�[{.K��Zقr�tfF"vW7V�6�W'Br�tfF"wV&FF�u����}	�]�m���R��M]�r�t�V7GW&R��Bf�V�Br�~iʮh��X����z��r�uf�&�W7V�r�6�BvVgV�FV�r�t6�6R��V�6��G&Fu����}	�]�m�������Rr�t�V7GW&Rg&��Ɩ�r�~�;�h�^���z��r�uf�&�W7V�r;�&W"Ɩ�r�t6�6RFW6FRV��6Ru����}	}==}���M]����}�-���r�t��F��r7VV6���FV�r�~j�>YʎX���ފ�ޙ�>��nX��j�Y�r�u7&6�W&�V��V�w6��FV��v�&BvV�FV�r�t6&v�F�V���FV��FRf��uТŲ}	�	�	-	
+�	�	]	�
+m	�
+�r�t�Ur�T5EU$Rr�~ik���z��r�t�UTRd�$�U5T�rr�t�TUd4�4RuТŲ}	}==}�-R-�M]����---�-R���2(	B�-����R��M]�]����r�uW��Bf�FV��"7FRƖ�(	Bv^(	���F�R6&R�bF�R&W7B�r�~K��K��xn�)h�n{)��KN�;�h�^���X[nKٞK�N{��h�K��8"r�t�FRV��f�FV���6��FW"l;�vRV��V�Ɩ�V��(	Bv�"�;���W&�V�2V�FV�&W7B�r�u7V&RV�l:�FV��VvV�V��6S���6�G&�2��2V�6&v��2FV�&W7F��uТŲ|+r�B�vV$�+rM�S	�	r�|+r�B�vV$�+rWF�S�"r�|+r�N8vV$�+ri�ZJrS�"r�|+r�B�vV$�+r&�2�RS�"r�|+r�B�vV$�+r�7FS�"uТŲ}	M�#c+rD�r�uWF�#c+rD�r�~i����#c+rD�r�t&�2�R#c+rD�r�t�7F#c+rD�uТŲ}	M�CCr�uWF�CCr�~i����CCr�t&�2�RCCr�t�7FCCuТŲ}	M��+rgV���Br�uWF��+rgV���Br�~i�����+rgV���Br�t&�2�R�+rgV���Br�t�7F�+rgV���BuТŲ}	M�s#+r�Br�uWF�s#+r�Br�~i����s#+r�Br�t&�2�Rs#+r�Br�t�7Fs#+r�BuТŲ}	M�C�r�uWF�8�h��춻�q�^ung to be processed…','等待处理…','Wartet auf die Verarbeitung…','En cola para procesar…']
     ,['Прошло','Elapsed','已用时','Vergangen','Transcurrido']
     ,['примерно осталось','about','预计还需','noch etwa','aproximadamente quedan']
     ,['осталось','remaining','还剩','verbleibend','quedan']

@@ -73,6 +73,7 @@ _subtitle_jobs_lock = threading.Lock()
 _subtitle_model_lock = threading.Lock()
 _note_translation_jobs: set[tuple[str, str, str]] = set()
 _note_translation_errors: dict[tuple[str, str, str], str] = {}
+_subtitle_translation_errors: dict[tuple[str, str], str] = {}
 _library_note_jobs: set[tuple[str, str]] = set()
 _outline_rebuild_jobs: set[tuple[str, str]] = set()
 _outline_rebuild_errors: dict[tuple[str, str], str] = {}
@@ -94,6 +95,13 @@ def storage_key() -> bytes:
         if len(_storage_key) != 32:
             raise RuntimeError("Ключ шифрования хранилища повреждён")
     return _storage_key
+
+
+def translation_model_file() -> Path:
+    """Prefer the larger offline model for translation; retain the base fallback."""
+    fallback = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
+    candidate = Path(os.getenv("TRANSLATION_MODEL_FILE", DATA / "models" / "qwen2.5-1.5b-instruct-q4_k_m.gguf"))
+    return candidate if candidate.is_file() else fallback
 
 
 def encrypt_text(value: str | None) -> str | None:
@@ -333,6 +341,18 @@ with closing(db()) as con:
         updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY(lecture_id,target_language,source_digest)
       );
+      CREATE TABLE IF NOT EXISTS watch_progress (
+        user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        lecture_id TEXT NOT NULL REFERENCES lectures(id) ON DELETE CASCADE,
+        position REAL NOT NULL DEFAULT 0, updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY(user_id,lecture_id)
+      );
+      CREATE TABLE IF NOT EXISTS bookmarks (
+        id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        lecture_id TEXT NOT NULL REFERENCES lectures(id) ON DELETE CASCADE,
+        position REAL NOT NULL, note TEXT NOT NULL DEFAULT '', created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE INDEX IF NOT EXISTS idx_bookmarks_user ON bookmarks(user_id,created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_segments_lecture ON segments(lecture_id, start);
     """)
 
@@ -348,6 +368,8 @@ with closing(db()) as con:
         con.execute("ALTER TABLE lectures ADD COLUMN media_type TEXT DEFAULT 'video/mp4'")
     if "quality" not in lecture_columns:
         con.execute("ALTER TABLE lectures ADD COLUMN quality TEXT NOT NULL DEFAULT 'best'")
+    if "thumbnail_path" not in lecture_columns:
+        con.execute("ALTER TABLE lectures ADD COLUMN thumbnail_path TEXT")
     if "progress" not in lecture_columns:
         con.execute("ALTER TABLE lectures ADD COLUMN progress INTEGER NOT NULL DEFAULT 0")
     if "stage" not in lecture_columns:
@@ -769,6 +791,14 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
         if ffmpeg.returncode:
             raise subprocess.CalledProcessError(ffmpeg.returncode, "ffmpeg", output=ffmpeg_out, stderr=ffmpeg_err)
         duration = media_duration(local_media)
+        thumbnail_path = UPLOADS / f"{lecture_id}.preview.enc"
+        preview = work / "preview.jpg"
+        try:
+            subprocess.run(["ffmpeg", "-v", "error", "-ss", str(min(2, max(0, duration * .05))), "-i", str(local_media), "-frames:v", "1", "-vf", "scale=640:-2", "-q:v", "5", str(preview)], check=True, timeout=45, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            encrypt_media(preview, thumbnail_path)
+        except Exception:
+            thumbnail_path.unlink(missing_ok=True)
+            thumbnail_path = None
         from app.speech import SpeechRecognizer
         recognizer = SpeechRecognizer(ASR_MODEL, MULTILINGUAL_ASR_MODEL)
         transcript = []
@@ -786,7 +816,7 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
         recognizer.load(speech_language)
         set_progress(lecture_id, 50, f"Распознаём речь · {speech_name}")
         transcribe_start = time.time()
-        for offset, chunk_end, samples, rate in audio_chunks(audio, max_seconds=120):
+        for offset, chunk_end, samples, rate in audio_chunks(audio, max_seconds=180):
             if cancelled and cancelled.is_set():
                 raise JobCancelled()
             recognized = recognizer.transcribe(samples, rate, speech_language)
@@ -849,7 +879,7 @@ def _process_lecture_job(lecture_id: str, source_file: Path | str, is_link: bool
             con.execute("DELETE FROM translated_segments WHERE lecture_id=?", (lecture_id,))
             con.execute("DELETE FROM segments WHERE lecture_id=?", (lecture_id,))
             con.executemany("INSERT INTO segments(lecture_id,start,end,text,embedding) VALUES(?,?,?,?,?)", [(lecture_id, s["start"], s["end"], encrypt_text(s["text"]), encrypt_blob(np.asarray(v, dtype=np.float32).tobytes())) for s, v in zip(transcript, vectors)])
-            con.execute("UPDATE lectures SET status='ready', progress=100, stage='Готово', eta_seconds=0, speed=NULL, duration=?, summary=?, outline=?, keywords=?, error=NULL WHERE id=?", (duration, encrypt_text(summary), encrypt_text(json.dumps(outline, ensure_ascii=False)), encrypt_text(json.dumps(keywords, ensure_ascii=False)), lecture_id))
+            con.execute("UPDATE lectures SET status='ready', progress=100, stage='Готово', eta_seconds=0, speed=NULL, duration=?, summary=?, outline=?, keywords=?, thumbnail_path=?, error=NULL WHERE id=?", (duration, encrypt_text(summary), encrypt_text(json.dumps(outline, ensure_ascii=False)), encrypt_text(json.dumps(keywords, ensure_ascii=False)), str(thumbnail_path) if thumbnail_path else None, lecture_id))
             con.commit()
     except JobCancelled:
         set_status(lecture_id, "cancelled")
@@ -878,6 +908,8 @@ def lecture_dict(row):
     d["keywords"] = json.loads(decrypt_text(d.get("keywords")) or "[]")
     d.pop("owner_id", None)
     d["video_url"] = f"/media/{d['id']}" if d.get("media_path") and Path(d["media_path"]).exists() else None
+    d["thumbnail_url"] = f"/api/lectures/{d['id']}/thumbnail" if d.get("thumbnail_path") and Path(d["thumbnail_path"]).exists() else None
+    d.pop("thumbnail_path", None)
     if d.get("started_at") is not None:
         try:
             d["started_at"] = float(d["started_at"])
@@ -1168,546 +1200,7 @@ def admin_vpn_nodes(request: Request):
         pass
     message = f"Найдено серверов: {len(nodes)}" if nodes else "В подписке не найдено рабочих VLESS-узлов. Проверьте ссылку."
     return {
-        "nodes": [{"index": i, "name": node["name"], "protocol": node.get("protocol", "vless")} for i, node in enumerate(nodes)],
-        "selected": selected,
-        "message": message,
-        "info": info
-    }
-
-
-@app.get("/api/admin/vpn/current")
-def admin_vpn_current(request: Request):
-    require_admin(request)
-    nodes_text = read_setting("vpn.nodes", "[]")
-    try:
-        nodes = json.loads(nodes_text)
-    except Exception:
-        nodes = []
-    selected = read_setting("vpn.selected_node", "0")
-    info = {}
-    try:
-        info = json.loads(read_setting("vpn.subscription_info", "{}"))
-    except Exception:
-        pass
-    return {
-        "nodes": [{"index": i, "name": node["name"], "protocol": node.get("protocol", "vless")} for i, node in enumerate(nodes)],
-        "selected": selected,
-        "message": f"Загружено серверов: {len(nodes)}" if nodes else "",
-        "info": info
-    }
-
-
-class VPNSelection(BaseModel):
-    index: int
-
-
-@app.post("/api/admin/vpn/select")
-def admin_select_vpn_node(body: VPNSelection, request: Request):
-    require_admin(request)
-    try:
-        nodes = json.loads(read_setting("vpn.nodes", "[]"))
-        node = nodes[body.index]
-    except (IndexError, TypeError, json.JSONDecodeError):
-        raise HTTPException(400, "Сначала обновите список серверов и выберите узел")
-    if not shutil.which("xray") and not shutil.which("sing-box"):
-        raise HTTPException(503, "На сервере не установлен Xray или sing-box")
-    write_setting("vpn.selected_node", str(body.index))
-    stop_vpn_proxy()
-    return {"ok": True, "name": node["name"]}
-
-
-@app.post("/api/admin/vpn/test")
-def admin_test_vpn(request: Request):
-    require_admin(request)
-    stop_vpn_proxy()
-    proxy = youtube_proxy_url()
-    if not proxy:
-        raise HTTPException(400, "VPN-прокси не настроен или список серверов пуст")
-    t0 = time.time()
-    try:
-        cmd = ["curl", "-s", "-I", "--socks5", "127.0.0.1:20801", "--max-time", "6", "https://www.youtube.com/generate_204"]
-        res = subprocess.run(cmd, capture_output=True, text=True, timeout=8)
-        if res.returncode != 0 or ("204" not in res.stdout and "200" not in res.stdout):
-            error_msg = res.stderr.strip() or res.stdout.strip() or f"Код ошибки {res.returncode}"
-            return {"ok": False, "message": f"YouTube не ответил: {error_msg[:120]}"}
-        latency_ms = int((time.time() - t0) * 1000)
-        return {"ok": True, "latency_ms": latency_ms, "message": f"YouTube доступен! Задержка: {latency_ms} мс"}
-    except Exception as e:
-        return {"ok": False, "message": f"Ошибка проверки соединения: {str(e)[:120]}"}
-
-
-def stop_vpn_proxy():
-    global _vpn_process
-    with _vpn_lock:
-        process, _vpn_process = _vpn_process, None
-        if process and process.poll() is None:
-            process.terminate()
-            try:
-                process.wait(timeout=2)
-            except Exception:
-                process.kill()
-
-
-def youtube_proxy_url() -> str | None:
-    global _vpn_process
-    nodes_text = read_setting("vpn.nodes")
-    if not nodes_text:
-        if read_setting("vpn.subscription_url"):
-            raise RuntimeError("Обновите список VPN-серверов в панели администратора")
-        return None
-    try:
-        nodes = json.loads(nodes_text)
-        index = int(read_setting("vpn.selected_node", "0"))
-        node = nodes[index]
-    except Exception as exc:
-        raise RuntimeError("Выбранный VPN-узел больше недоступен. Обновите список серверов.") from exc
-
-    port = 20801
-    node_type = node.get("type", "xray")
-
-    with _vpn_lock:
-        if _vpn_process and _vpn_process.poll() is None:
-            return f"socks5://127.0.0.1:{port}"
-
-        config_path = WORK / "youtube-proxy.json"
-
-        if node_type == "xray" and shutil.which("xray"):
-            binary = shutil.which("xray")
-            config = {
-                "log": {"loglevel": "warning"},
-                "inbounds": [{
-                    "port": port,
-                    "listen": "127.0.0.1",
-                    "protocol": "socks",
-                    "settings": {"auth": "noauth", "udp": True}
-                }],
-                "outbounds": [
-                    node["outbound"],
-                    {"protocol": "freedom", "tag": "direct"}
-                ]
-            }
-            config_path.write_text(json.dumps(config, indent=2), encoding="utf-8")
-            config_path.chmod(0o600)
-            check = subprocess.run([binary, "run", "-test", "-c", str(config_path)], capture_output=True, text=True, timeout=15)
-            if check.returncode:
-                raise RuntimeError("Ошибка конфигурации Xray: " + (check.stderr or check.stdout)[-400:])
-            _vpn_process = subprocess.Popen([binary, "run", "-c", str(config_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        else:
-            binary = shutil.which("sing-box")
-            if not binary:
-                raise RuntimeError("На сервере не найден исполняемый файл proxy (xray / sing-box)")
-            config = {
-                "log": {"level": "error"},
-                "inbounds": [{"type": "mixed", "tag": "local", "listen": "127.0.0.1", "listen_port": port}],
-                "outbounds": [node["outbound"], {"type": "direct", "tag": "direct"}],
-                "route": {"final": node["outbound"].get("tag", "proxy")}
-            }
-            config_path.write_text(json.dumps(config), encoding="utf-8")
-            config_path.chmod(0o600)
-            check = subprocess.run([binary, "check", "-c", str(config_path)], capture_output=True, text=True, timeout=15)
-            if check.returncode:
-                raise RuntimeError("Не удалось проверить VPN-узел: " + (check.stderr or check.stdout)[-400:])
-            _vpn_process = subprocess.Popen([binary, "run", "-c", str(config_path)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-        process = _vpn_process
-
-    deadline = time.time() + 12
-    while time.time() < deadline:
-        if process.poll() is not None:
-            raise RuntimeError("VPN-узел завершился сразу после запуска")
-        try:
-            with socket.create_connection(("127.0.0.1", port), timeout=.3):
-                return f"socks5://127.0.0.1:{port}"
-        except OSError:
-            time.sleep(.2)
-    stop_vpn_proxy()
-    raise RuntimeError("Локальный прокси не открыл соединение")
-
-
-def auth_response(request: Request, user_id: str, username: str):
-    user = account_row(user_id)
-    response = JSONResponse({"authenticated": True, "user": {"id": user_id, "username": username, "role": user["role"]}})
-    secure = request.url.scheme == "https" or request.headers.get("x-forwarded-proto", "").lower() == "https"
-    response.set_cookie("lectorium_session", make_session(user_id), max_age=30 * 24 * 60 * 60, httponly=True, secure=secure, samesite="lax", path="/")
-    return response
-
-
-@app.get("/api/auth/session")
-def auth_session(request: Request):
-    user_id = session_user(request.cookies.get("lectorium_session"))
-    user = account_row(user_id) if user_id else None
-    if not user:
-        return {"authenticated": False}
-    return {"authenticated": True, "user": {"id": user["id"], "username": user["username"], "role": user["role"]}}
-
-
-@app.post("/api/auth/login")
-def login(body: Credentials, request: Request):
-    enforce_auth_limit(request)
-    username = body.username.strip()
-    with closing(db()) as con:
-        user = con.execute("SELECT id,username,password_hash,blocked FROM users WHERE username=?", (username,)).fetchone()
-    if user and user["blocked"]:
-        raise HTTPException(403, "Учётная запись заблокирована. Обратитесь к администратору")
-    if not user or not password_matches(body.password, user["password_hash"]):
-        raise HTTPException(401, "Неверный логин или пароль")
-    return auth_response(request, user["id"], user["username"])
-
-
-@app.post("/api/auth/register")
-def register(body: Credentials, request: Request):
-    enforce_auth_limit(request)
-    username = body.username.strip().lower()
-    password = body.password
-    if not re.fullmatch(r"[a-z0-9._-]{3,32}", username):
-        raise HTTPException(400, "Логин: 3–32 символа, латинские буквы, цифры, точка, дефис или подчёркивание")
-    if len(password) < 8 or len(password) > 128:
-        raise HTTPException(400, "Пароль должен содержать от 8 до 128 символов")
-    user_id = str(uuid.uuid4())
-    try:
-        with closing(db()) as con:
-            con.execute("INSERT INTO users(id,username,password_hash) VALUES(?,?,?)", (user_id, username, password_hash(password)))
-            con.commit()
-    except sqlite3.IntegrityError:
-        raise HTTPException(409, "Такой логин уже занят")
-    return auth_response(request, user_id, username)
-
-
-@app.post("/api/auth/logout")
-def logout():
-    response = JSONResponse({"ok": True})
-    response.delete_cookie("lectorium_session", path="/")
-    return response
-
-
-@app.post("/api/auth/password")
-def change_password(body: PasswordChange, request: Request):
-    user_id = request.state.user_id
-    with closing(db()) as con:
-        user = con.execute("SELECT password_hash FROM users WHERE id=?", (user_id,)).fetchone()
-        if not user or not password_matches(body.current_password, user["password_hash"]):
-            raise HTTPException(400, "Текущий пароль введён неверно")
-        if len(body.new_password) < 8 or len(body.new_password) > 128:
-            raise HTTPException(400, "Новый пароль должен содержать от 8 до 128 символов")
-        con.execute("UPDATE users SET password_hash=? WHERE id=?", (password_hash(body.new_password), user_id))
-        con.commit()
-    response = JSONResponse({"ok": True})
-    secure = request.url.scheme == "https" or request.headers.get("x-forwarded-proto", "").lower() == "https"
-    response.set_cookie("lectorium_session", make_session(user_id), max_age=30 * 24 * 60 * 60, httponly=True, secure=secure, samesite="lax", path="/")
-    return response
-
-
-@app.get("/api/account")
-def account(request: Request):
-    user = account_row(request.state.user_id)
-    with closing(db()) as con:
-        counts = con.execute("SELECT COUNT(*) AS total, SUM(CASE WHEN status='ready' THEN 1 ELSE 0 END) AS ready FROM lectures WHERE owner_id=?", (request.state.user_id,)).fetchone()
-        links = con.execute("SELECT provider,display_name FROM oauth_links WHERE user_id=? ORDER BY provider", (request.state.user_id,)).fetchall()
-    available = {provider: bool(read_setting(f"oauth.{provider}.client_id") and
-                                (provider == "mailru" or read_setting(f"oauth.{provider}.client_secret")))
-                 for provider in ("yandex", "github", "mailru")}
-    avatar = read_setting(f"account.avatar.{request.state.user_id}")
-    social_avatar = read_setting(f"account.social_avatar.{request.state.user_id}")
-    return {"username": user["username"], "created_at": user["created_at"], "lectures": counts["total"], "ready": counts["ready"] or 0, "encrypted": True,
-            "avatar": avatar or social_avatar or "",
-            "linked_providers": [{"provider": row["provider"], "display_name": row["display_name"]} for row in links],
-            "oauth_available": available}
-
-
-class AccountAvatarPayload(BaseModel):
-    avatar: str
-
-
-@app.put("/api/account/avatar")
-def update_account_avatar(payload: AccountAvatarPayload, request: Request):
-    value = payload.avatar.strip()
-    if value and not re.fullmatch(r"(?:[А-ЯЁA-Z]{1,3}|✦|◉|❋|☼|🌿|📚|✍️|🎓)", value):
-        match = re.fullmatch(r"data:image/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})", value)
-        if not match:
-            raise HTTPException(400, "Введите до трёх русских или латинских букв, выберите готовый аватар или загрузите PNG, JPEG либо WebP")
-        try:
-            image = base64.b64decode(match.group(2), validate=True)
-        except Exception as exc:
-            raise HTTPException(400, "Не удалось прочитать изображение") from exc
-        if len(image) > 2 * 1024 * 1024:
-            raise HTTPException(413, "Изображение должно быть не больше 2 МБ")
-        signatures = {"png": image.startswith(b"\x89PNG\r\n\x1a\n"), "jpeg": image.startswith(b"\xff\xd8\xff"), "webp": image.startswith(b"RIFF") and image[8:12] == b"WEBP"}
-        if not signatures[match.group(1)]:
-            raise HTTPException(400, "Формат изображения не совпадает с содержимым файла")
-    write_setting(f"account.avatar.{request.state.user_id}", value)
-    return {"avatar": value or read_setting(f"account.social_avatar.{request.state.user_id}")}
-
-
-OAUTH_PROVIDERS = {
-    "yandex": {"authorize": "https://oauth.yandex.ru/authorize", "token": "https://oauth.yandex.ru/token", "userinfo": "https://login.yandex.ru/info?format=json", "scope": "login:info"},
-    "github": {"authorize": "https://github.com/login/oauth/authorize", "token": "https://github.com/login/oauth/access_token", "userinfo": "https://api.github.com/user", "scope": "read:user"},
-    "mailru": {"authorize": "https://id.vk.ru/authorize", "token": "https://id.vk.ru/oauth2/auth", "userinfo": "https://id.vk.ru/oauth2/user_info", "scope": "vkid.personal_info"},
-}
-
-
-def oauth_provider_identity(provider: str, code: str, state: str = "", device_id: str = "") -> tuple[str, str, str, str]:
-    cfg = OAUTH_PROVIDERS[provider]
-    client_id = read_setting(f"oauth.{provider}.client_id")
-    client_secret = read_setting(f"oauth.{provider}.client_secret")
-    callback = f"https://demoground.ru/api/oauth/{provider}/callback"
-    data = {"client_id": client_id, "client_secret": client_secret, "code": code, "redirect_uri": callback, "grant_type": "authorization_code"}
-    headers = {"Content-Type": "application/x-www-form-urlencoded", "Accept": "application/json"}
-    if provider == "mailru":
-        if not device_id:
-            raise ValueError("VK ID не передал идентификатор устройства")
-        verifier_key = f"oauth.vkid.verifier.{hashlib.sha256(state.encode()).hexdigest()}"
-        verifier = read_setting(verifier_key)
-        delete_setting(verifier_key)
-        if not verifier:
-            raise ValueError("Истёк код проверки VK ID")
-        params = {"grant_type": "authorization_code", "redirect_uri": callback, "client_id": client_id,
-                  "code_verifier": verifier, "state": state, "device_id": device_id}
-        token_req = urllib.request.Request(cfg["token"] + "?" + urlencode(params), data=urlencode({"code": code}).encode(), headers=headers, method="POST")
-    else:
-        token_req = urllib.request.Request(cfg["token"], data=urlencode(data).encode(), headers=headers, method="POST")
-    with urllib.request.urlopen(token_req, timeout=20) as response:
-        token_data = json.loads(response.read())
-    access_token = token_data.get("access_token")
-    if not access_token:
-        raise ValueError("Провайдер не выдал токен авторизации")
-    if provider == "mailru":
-        if not hmac.compare_digest(str(token_data.get("state", "")), state):
-            raise ValueError("VK ID вернул неверное состояние авторизации")
-        info_req = urllib.request.Request(cfg["userinfo"] + "?" + urlencode({"client_id": client_id}),
-                                          data=urlencode({"access_token": access_token}).encode(), headers=headers, method="POST")
-        with urllib.request.urlopen(info_req, timeout=20) as response:
-            profile_data = json.loads(response.read())
-        profile = profile_data.get("user", profile_data)
-        avatar = profile.get("avatar", "")
-        if urlparse(avatar).scheme != "https" or urlparse(avatar).hostname != "vk.com" and not (urlparse(avatar).hostname or "").endswith(".userapi.com"):
-            avatar = ""
-        name = " ".join(part for part in (profile.get("first_name"), profile.get("last_name")) if part).strip() or "VK ID"
-        return str(profile.get("user_id") or profile.get("id") or ""), name, "", avatar
-    if provider == "yandex":
-        info_req = urllib.request.Request(cfg["userinfo"], headers={"Authorization": f"OAuth {access_token}"})
-        with urllib.request.urlopen(info_req, timeout=20) as response:
-            profile = json.loads(response.read())
-        avatar_id = str(profile.get("default_avatar_id") or "")
-        avatar = f"https://avatars.yandex.net/get-yapic/{avatar_id}/islands-200" if re.fullmatch(r"[A-Za-z0-9_-]{1,128}", avatar_id) else ""
-        return str(profile["id"]), profile.get("login", "Яндекс"), "", avatar
-    if provider == "github":
-        info_req = urllib.request.Request(cfg["userinfo"], headers={"Authorization": f"Bearer {access_token}", "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "Lectorium"})
-        with urllib.request.urlopen(info_req, timeout=20) as response:
-            profile = json.loads(response.read())
-        avatar = profile.get("avatar_url", "")
-        if urlparse(avatar).hostname != "avatars.githubusercontent.com" or urlparse(avatar).scheme != "https":
-            avatar = ""
-        return str(profile["id"]), profile.get("login", "GitHub"), "", avatar
-    raise ValueError("Неизвестный OAuth-провайдер")
-
-
-@app.get("/api/oauth/{provider}/start")
-def oauth_start(provider: str, request: Request, link: bool = False):
-    if provider not in OAUTH_PROVIDERS:
-        raise HTTPException(404, "Провайдер не найден")
-    client_id = read_setting(f"oauth.{provider}.client_id")
-    client_secret = read_setting(f"oauth.{provider}.client_secret")
-    if not client_id or (provider != "mailru" and not client_secret):
-        raise HTTPException(503, "Провайдер ещё не настроен администратором")
-    user_id = session_user(request.cookies.get("lectorium_session")) if link else None
-    if link and not user_id:
-        raise HTTPException(401, "Войдите в аккаунт, чтобы привязать соцсеть")
-    state = secrets.token_urlsafe(32)
-    verifier = secrets.token_urlsafe(64) if provider == "mailru" else ""
-    purpose = "link" if link else "login"
-    with closing(db()) as con:
-        con.execute("INSERT INTO oauth_states(state_hash,provider,user_id,purpose,expires_at) VALUES(?,?,?,?,?)", (hashlib.sha256(state.encode()).hexdigest(), provider, user_id, purpose, time.time() + 600))
-        con.commit()
-    callback = f"https://demoground.ru/api/oauth/{provider}/callback"
-    query = {"client_id": client_id, "redirect_uri": callback, "response_type": "code", "state": state, "scope": OAUTH_PROVIDERS[provider]["scope"]}
-    if provider == "mailru":
-        challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).decode().rstrip("=")
-        query.update({"code_challenge": challenge, "code_challenge_method": "s256"})
-        write_setting(f"oauth.vkid.verifier.{hashlib.sha256(state.encode()).hexdigest()}", verifier)
-    if provider == "github":
-        query["allow_signup"] = "true"
-    response = RedirectResponse(OAUTH_PROVIDERS[provider]["authorize"] + "?" + urlencode(query), status_code=302)
-    response.set_cookie("lectorium_oauth_state", state, max_age=600, httponly=True, secure=True, samesite="lax", path="/")
-    return response
-
-
-@app.get("/api/oauth/{provider}/callback")
-def oauth_callback(provider: str, request: Request, code: str = "", state: str = "", error: str = "", device_id: str = ""):
-    if provider not in OAUTH_PROVIDERS:
-        raise HTTPException(404, "Провайдер не найден")
-    if error or not code or not state or not hmac.compare_digest(state, request.cookies.get("lectorium_oauth_state", "")):
-        return RedirectResponse("/?oauth_error=authorization_failed", status_code=303)
-    digest = hashlib.sha256(state.encode()).hexdigest()
-    with closing(db()) as con:
-        state_row = con.execute("SELECT * FROM oauth_states WHERE state_hash=? AND provider=? AND expires_at>?", (digest, provider, time.time())).fetchone()
-        con.execute("DELETE FROM oauth_states WHERE state_hash=?", (digest,))
-        con.commit()
-    if not state_row:
-        return RedirectResponse("/?oauth_error=state_expired", status_code=303)
-    try:
-        subject, display_name, email, avatar_url = oauth_provider_identity(provider, code, state=state, device_id=device_id)
-    except Exception:
-        return RedirectResponse("/?oauth_error=provider_failed", status_code=303)
-    if state_row["purpose"] == "link":
-        user_id = state_row["user_id"]
-        try:
-            with closing(db()) as con:
-                con.execute("INSERT INTO oauth_links(id,user_id,provider,subject,display_name,email_enc) VALUES(?,?,?,?,?,?)", (str(uuid.uuid4()), user_id, provider, subject, display_name, encrypt_text(email)))
-                con.commit()
-        except sqlite3.IntegrityError:
-            return RedirectResponse("/?oauth_error=already_linked", status_code=303)
-        if avatar_url:
-            write_setting(f"account.social_avatar.{user_id}", avatar_url)
-        response = RedirectResponse("/?linked=" + provider, status_code=303)
-    else:
-        with closing(db()) as con:
-            linked = con.execute("SELECT u.id,u.username FROM oauth_links o JOIN users u ON u.id=o.user_id WHERE o.provider=? AND o.subject=?", (provider, subject)).fetchone()
-        if not linked:
-            return RedirectResponse("/?oauth_error=not_linked", status_code=303)
-        if avatar_url:
-            write_setting(f"account.social_avatar.{linked['id']}", avatar_url)
-        response = RedirectResponse("/", status_code=303)
-        secure = request.url.scheme == "https" or request.headers.get("x-forwarded-proto", "").lower() == "https"
-        response.set_cookie("lectorium_session", make_session(linked["id"]), max_age=30 * 24 * 60 * 60, httponly=True, secure=secure, samesite="lax", path="/")
-    response.delete_cookie("lectorium_oauth_state", path="/")
-    return response
-
-
-@app.get("/api/lectures")
-def list_lectures(request: Request):
-    with closing(db()) as con:
-        rows = con.execute("SELECT * FROM lectures WHERE owner_id=? ORDER BY created_at DESC", (request.state.user_id,)).fetchall()
-        return [lecture_dict(r) for r in rows]
-
-
-def resolve_or_create_folder(con, user_id: str, folder_id: str | None = None, new_folder_name: str | None = None) -> str | None:
-    target_name = re.sub(r"\s+", " ", new_folder_name or "").strip()
-    if target_name:
-        if len(target_name) > 50:
-            target_name = target_name[:50]
-        rows = con.execute("SELECT id, name FROM folders WHERE owner_id=?", (user_id,)).fetchall()
-        for r in rows:
-            if decrypt_text(r["name"]).casefold() == target_name.casefold():
-                return r["id"]
-        new_id = str(uuid.uuid4())
-        con.execute("INSERT INTO folders(id,owner_id,name) VALUES(?,?,?)", (new_id, user_id, encrypt_text(target_name)))
-        return new_id
-    if folder_id and folder_id.strip():
-        fid = folder_id.strip()
-        if con.execute("SELECT 1 FROM folders WHERE id=? AND owner_id=?", (fid, user_id)).fetchone():
-            return fid
-    return None
-
-
-@app.post("/api/lectures/upload", status_code=202)
-async def upload_lecture(
-    request: Request,
-    background: BackgroundTasks,
-    file: UploadFile = File(...),
-    title: str = Form(""),
-    folder_id: str = Form(""),
-    new_folder_name: str = Form(""),
-    speech_language: str = Form("auto")
-):
-    if speech_language not in SPEECH_LANGUAGES:
-        raise HTTPException(400, "Выберите поддерживаемый язык распознавания")
-    ext = Path(file.filename or "").suffix.lower()
-    if ext not in {".mp4", ".webm"}:
-        raise HTTPException(400, "Загрузите видео MP4 или WebM")
-    lecture_id = str(uuid.uuid4())
-    path = UPLOADS / f"{lecture_id}.enc"
-    staging = WORK / f"{lecture_id}{ext}.upload"
-    size = 0
-    try:
-        with staging.open("wb") as out:
-            while chunk := await file.read(1024 * 1024):
-                size += len(chunk)
-                if size > 500 * 1024 * 1024:
-                    raise HTTPException(413, "Размер файла превышает 500 МБ")
-                out.write(chunk)
-        encrypt_media(staging, path)
-    except Exception:
-        staging.unlink(missing_ok=True)
-        path.unlink(missing_ok=True)
-        raise
-    finally:
-        staging.unlink(missing_ok=True)
-    if await request.is_disconnected():
-        path.unlink(missing_ok=True)
-        raise HTTPException(499, "Загрузка отменена")
-    with closing(db()) as con:
-        con.execute("BEGIN IMMEDIATE")
-        final_folder_id = resolve_or_create_folder(con, request.state.user_id, folder_id, new_folder_name)
-        display_title = unique_lecture_title(con, request.state.user_id, title or Path(file.filename or "upload").stem)
-        con.execute("INSERT INTO lectures(id,title,source,media_path,status,owner_id,media_type,folder_id,started_at,speech_language) VALUES(?,?,?,?,?,?,?,?,?,?)", (lecture_id, encrypt_text(display_title), encrypt_text(file.filename or "upload"), str(path), "queued", request.state.user_id, "video/webm" if ext == ".webm" else "video/mp4", final_folder_id, time.time(), speech_language)); con.commit()
-    background.add_task(process_lecture, lecture_id, path)
-    return {"id": lecture_id, "folder_id": final_folder_id}
-
-
-class LinkRequest(BaseModel):
-    url: str
-    title: str = ""
-    quality: str = "best"
-    folder_id: str | None = None
-    new_folder_name: str | None = None
-    speech_language: str = "auto"
-
-
-@app.post("/api/lectures/link", status_code=202)
-def add_link(body: LinkRequest, background: BackgroundTasks, request: Request):
-    return _add_link(body, background, request.state.user_id)
-
-
-def _add_link(body: LinkRequest, background: BackgroundTasks, owner_id: str):
-    if body.speech_language not in SPEECH_LANGUAGES:
-        raise HTTPException(400, "Выберите поддерживаемый язык распознавания")
-    url = normalize_video_url(body.url)
-    quality = body.quality if body.quality in QUALITY_LEVELS else ""
-    if not quality:
-        raise HTTPException(400, "Выберите качество из списка")
-    lecture_id = str(uuid.uuid4())
-    with closing(db()) as con:
-        con.execute("BEGIN IMMEDIATE")
-        final_folder_id = resolve_or_create_folder(con, owner_id, body.folder_id, body.new_folder_name)
-        display_title = unique_lecture_title(con, owner_id, body.title or "Лекция по ссылке")
-        con.execute("INSERT INTO lectures(id,title,source,status,owner_id,quality,folder_id,started_at,speech_language) VALUES(?,?,?,?,?,?,?,?,?)", (lecture_id, encrypt_text(display_title), encrypt_text(url), "queued", owner_id, quality, final_folder_id, time.time(), body.speech_language)); con.commit()
-    background.add_task(process_lecture, lecture_id, url, True, quality)
-    return {"id": lecture_id, "folder_id": final_folder_id}
-
-
-@app.get("/api/lectures/{lecture_id}")
-def get_lecture(lecture_id: str, request: Request):
-    with closing(db()) as con:
-        row = con.execute("SELECT * FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
-        if not row: raise HTTPException(404, "Лекция не найдена")
-        return lecture_dict(row)
-
-
-@app.post("/api/lectures/{lecture_id}/retry", status_code=202)
-def retry_lecture(lecture_id: str, background: BackgroundTasks, request: Request):
-    with closing(db()) as con:
-        row = con.execute("SELECT id, source, media_path,quality,status FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
-    if not row:
-        raise HTTPException(404, "Лекция не найдена")
-    if row["status"] in {"queued", "processing"}:
-        return {"id": lecture_id, "status": row["status"]}
-    stored_media = Path(row["media_path"]) if row["media_path"] else None
-    if stored_media and stored_media.exists():
-        source_file, is_link = stored_media, False
-    else:
-        original_source = decrypt_text(row["source"])
-        source_file = original_source
-        is_link = urlparse(original_source).scheme == "https"
-        if not is_link or not supported_video_url(original_source):
-            raise HTTPException(400, "Исходный файл больше не доступен для повтора")
-    with closing(db()) as con:
-        con.execute("UPDATE lectures SET status='queued',error=NULL,progress=0,stage='В очереди',started_at=?,eta_seconds=NULL,speed=NULL WHERE id=?", (time.time(), lecture_id))
-        con.commit()
-    background.add_task(process_lecture, lecture_id, source_file, is_link, row["quality"] or "best")
-    return {"id": lecture_id, "status": "queued"}
-
-
-@app.post("/api/lectures/{lecture_id}/cancel")
+        "nodes": [{"index": i, "name": node["name"], "protocol": node.get("protocol", "vless")} for i, node5׽�����k�w��re_id}/cancel")
 def cancel_lecture(lecture_id: str, request: Request):
     with closing(db()) as con:
         row = con.execute("SELECT status FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
@@ -1828,7 +1321,7 @@ def background_translate_lecture_notes(lecture_id: str, target_language: str, di
         if lecture_notes_digest(summary, outline, keywords, row["speech_language"]) != digest:
             return
         binary = Path(os.getenv("SUMMARY_BINARY", ROOT / "bin" / "llama-cli"))
-        model = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
+        model = translation_model_file()
         if not binary.is_file() or not model.is_file():
             return
         from app.content import translate_lecture_notes
@@ -1895,7 +1388,7 @@ def translate_lecture_content(lecture_id: str, body: LectureContentTranslationRe
     if cached:
         return {"status": "complete", **json.loads(decrypt_text(cached["content"]))}
     binary = Path(os.getenv("SUMMARY_BINARY", ROOT / "bin" / "llama-cli"))
-    model = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
+    model = translation_model_file()
     if not binary.is_file() or not model.is_file():
         raise HTTPException(503, "Локальная модель перевода временно недоступна")
     key = (lecture_id, body.target_language, digest)
@@ -2037,13 +1530,14 @@ def translate_lecture_subtitles(lecture_id: str, body: SubtitleTranslationReques
             con.commit()
         completed = con.execute("SELECT COUNT(*) FROM translated_segments WHERE lecture_id=? AND target_language=?", (lecture_id, body.target_language)).fetchone()[0]
     binary = Path(os.getenv("SUMMARY_BINARY", ROOT / "bin" / "llama-cli"))
-    model = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
+    model = translation_model_file()
     if completed < total and (not binary.is_file() or not model.is_file()):
         raise HTTPException(503, "Локальная модель перевода временно недоступна")
     key = (lecture_id, body.target_language)
     with _subtitle_jobs_lock:
         running = key in _subtitle_jobs
         if completed < total and not running:
+            _subtitle_translation_errors.pop(key, None)
             _subtitle_jobs.add(key)
             background_tasks.add_task(background_translate_subtitles, lecture_id, body.target_language)
             running = True
@@ -2056,9 +1550,9 @@ def background_translate_subtitles(lecture_id: str, target_language: str) -> Non
     try:
         from app.content import translate_subtitles
         binary = Path(os.getenv("SUMMARY_BINARY", ROOT / "bin" / "llama-cli"))
-        model = Path(os.getenv("SUMMARY_MODEL_FILE", DATA / "models" / "qwen2.5-0.5b-instruct-q4_k_m.gguf"))
+        model = translation_model_file()
         if not binary.is_file() or not model.is_file():
-            return
+            raise RuntimeError("Локальная модель перевода временно недоступна")
         with closing(db()) as con:
             lecture_status = con.execute("SELECT status FROM lectures WHERE id=?", (lecture_id,)).fetchone()
             if not lecture_status or lecture_status["status"] != "ready":
@@ -2091,9 +1585,13 @@ def background_translate_subtitles(lecture_id: str, target_language: str) -> Non
                      for index, text in zip(indexes, translated)],
                 )
                 con.commit()
-    except Exception:
+    except Exception as exc:
         # Keep completed rows; the next request resumes from the first missing row.
-        pass
+        with _subtitle_jobs_lock:
+                _subtitle_translation_errors[key] = str(exc)[:300]
+    else:
+        with _subtitle_jobs_lock:
+            _subtitle_translation_errors.pop(key, None)
     finally:
         with _subtitle_jobs_lock:
             _subtitle_jobs.discard(key)
@@ -2120,7 +1618,8 @@ def get_subtitle_translation(lecture_id: str, request: Request, target_language:
         ).fetchall()
     with _subtitle_jobs_lock:
         running = (lecture_id, target_language) in _subtitle_jobs
-    return {"total": total, "completed": completed, "running": running,
+        error = _subtitle_translation_errors.get((lecture_id, target_language))
+    return {"total": total, "completed": completed, "running": running, "error": error,
             "complete": completed >= total,
             "items": [{"index": row["segment_index"], "text": decrypt_text(row["text"])} for row in rows]}
 
@@ -2405,12 +1904,14 @@ def assistant(body: AssistantMessage, request: Request):
 def delete_lecture(lecture_id: str, request: Request):
     cancel_running_job(lecture_id)
     with closing(db()) as con:
-        row = con.execute("SELECT media_path FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
+        row = con.execute("SELECT media_path,thumbnail_path FROM lectures WHERE id=? AND owner_id=?", (lecture_id, request.state.user_id)).fetchone()
         if not row: raise HTTPException(404, "Лекция не найдена")
         con.execute("DELETE FROM lectures WHERE id=?", (lecture_id,)); con.commit()
     shutil.rmtree(WORK / lecture_id, ignore_errors=True)
     if row["media_path"]:
         Path(row["media_path"]).unlink(missing_ok=True)
+    if row["thumbnail_path"]:
+        Path(row["thumbnail_path"]).unlink(missing_ok=True)
     return {"ok": True}
 
 
