@@ -23,6 +23,7 @@
     button?.addEventListener('click',()=>{mode=modes[(modes.indexOf(mode)+1)%modes.length];try{localStorage.setItem('lectoriumTheme',mode)}catch{}render()});
     window.addEventListener('lectorium:language-change',render);
     prefersDark.addEventListener?.('change',()=>{if(mode==='auto')render()});
+    window.addEventListener('storage',event=>{if(event.key!=='lectoriumTheme')return;mode=modes.includes(event.newValue)?event.newValue:'auto';render()});
     render();
   }
   document.documentElement.dataset.theme=mode==='auto'?(prefersDark.matches?'dark':'light'):mode;

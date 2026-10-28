@@ -130,18 +130,230 @@
     ,['Очередь обработки','Processing queue','处理队列','Verarbeitungswarteschlange','Cola de procesamiento']
     ,['Лекция принята','Lecture queued','课程已加入队列','Vorlesung eingereiht','Clase en cola']
     ,['Обрабатываем лекцию','Processing lecture','正在处理课程','Vorlesung wird verarbeitet','Procesando la clase']
+    ,['В очереди на обработку…','Waiting to be processed…','等待处理…','Wartet auf die Verarbeitung…','En cola para procesar…']
+    ,['Прошло','Elapsed','已用时','Vergangen','Transcurrido']
+    ,['примерно осталось','about','预计还需','noch etwa','aproximadamente quedan']
+    ,['осталось','remaining','还剩','verbleibend','quedan']
+    ,['завершаем текущий этап','finishing this step','正在完成当前步骤','aktueller Schritt wird abgeschlossen','terminando esta etapa']
+    ,['Не удалось перевести содержание лекции. Нажмите, чтобы повторить.','Could not translate the lecture notes. Click to retry.','无法翻译课程内容。点击重试。','Der Vorlesungsinhalt konnte nicht übersetzt werden. Zum Wiederholen klicken.','No se pudo traducir el contenido de la clase. Haz clic para reintentar.']
+    ,['Перевод продолжается в фоне. Откройте лекцию позже.','Translation is continuing in the background. Reopen the lecture later.','翻译正在后台继续。请稍后重新打开课程。','Die Übersetzung läuft im Hintergrund weiter. Öffne die Vorlesung später erneut.','La traducción continúa en segundo plano. Vuelve a abrir la clase más tarde.']
+    ,['Не удалось обновить пересказ и главы. Нажмите, чтобы повторить.','Could not refresh the summary and chapters. Click to retry.','无法更新摘要和章节。点击重试。','Zusammenfassung und Kapitel konnten nicht aktualisiert werden. Zum Wiederholen klicken.','No se pudo actualizar el resumen y los capítulos. Haz clic para reintentar.']
+    ,['Пересчёт продолжается в фоне. Откройте лекцию позже.','The update is continuing in the background. Reopen the lecture later.','更新正在后台继续。请稍后重新打开课程。','Die Aktualisierung läuft im Hintergrund weiter. Öffne die Vorlesung später erneut.','La actualización continúa en segundo plano. Vuelve a abrir la clase más tarde.']
     ,['Разделы появятся после обработки.','Chapters will appear after processing.','处理后将显示章节。','Kapitel erscheinen nach der Verarbeitung.','Los capítulos aparecerán al terminar el procesamiento.']
     ,['Конспект появится после обработки.','A summary will appear after processing.','处理后将显示摘要。','Eine Zusammenfassung erscheint nach der Verarbeitung.','El resumen aparecerá al terminar el procesamiento.']
     ,['Автоопределение языка','Automatic language detection','自动检测语言','Automatische Spracherkennung','Detección automática del idioma']
     ,['🌐 Автоопределение языка','🌐 Automatic language detection','🌐 自动检测语言','🌐 Sprache automatisch erkennen','🌐 Detección automática del idioma']
     ,['По умолчанию язык определяется по речи в видео. Интерфейс настраивается отдельно.','The video language is detected automatically by default. The interface language is set separately.','默认会自动识别视频语言。界面语言可单独设置。','Die Videosprache wird standardmäßig automatisch erkannt. Die Oberflächensprache wird separat eingestellt.','El idioma del vídeo se detecta automáticamente. El idioma de la interfaz se configura por separado.']
   ];
+  locales.it={
+  "Язык интерфейса": "Lingua dell’interfaccia",
+  "ЗНАНИЯ — НАЙДЕНЫ": "IL SAPERE — RITROVATO",
+  "В каждой лекции": "In ogni lezione",
+  "есть ": "c’è ",
+  "ответ.": "una risposta.",
+  "Ищите идеи и объяснения, а не отдельные слова.": "Cerca idee e spiegazioni, non solo singole parole.",
+  "Мы покажем нужный момент и поможем разобраться.": "Troveremo il momento giusto e ti aiuteremo a capire.",
+  "Нажмите на лупу,": "Fai clic sulla lente",
+  "чтобы найти идею": "per trovare un’idea",
+  "идея найдена": "idea trovata",
+  "СЕМАНТИЧЕСКИЙ ПОИСК": "RICERCA SEMANTICA",
+  "Ищет по всем готовым лекциям": "Cerca in tutte le lezioni elaborate",
+  "Найти": "Cerca",
+  "ВАША БИБЛИОТЕКА": "LA TUA BIBLIOTECA",
+  "Лекции ": "Lezioni ",
+  "Добавить лекцию": "Aggiungi lezione",
+  "Начните с первой лекции": "Inizia dalla tua prima lezione",
+  "Загрузите видео — мы подготовим транскрипт, главы и смысловой поиск.": "Carica un video: prepareremo trascrizione, capitoli e ricerca semantica.",
+  "ЛИЦЕНЗИЯ И УСЛОВИЯ ИСПОЛЬЗОВАНИЯ": "LICENZA E CONDIZIONI D’USO",
+  "Язык речи в видео": "Lingua parlata nel video",
+  "Выберите язык, на котором говорят в видео. Язык интерфейса меняется отдельно.": "Scegli la lingua parlata nel video. La lingua dell’interfaccia si imposta separatamente.",
+  "Название лекции": "Titolo della lezione",
+  "Папка для лекции": "Cartella della lezione",
+  "＋ Новая папка": "＋ Nuova cartella",
+  "Без папки (основная библиотека)": "Senza cartella (biblioteca principale)",
+  "Отмена": "Annulla",
+  "Создастся новая папка, и файл сразу будет перемещён в неё.": "Verrà creata una nuova cartella e il file sarà spostato al suo interno.",
+  "Перетащите видео сюда": "Trascina qui il video",
+  "или ": "oppure ",
+  "выберите файл": "scegli un file",
+  "Ссылка": "Link",
+  "Файл видео": "File video",
+  "Ссылка на видео": "Link del video",
+  "Качество видео": "Qualità del video",
+  "Лучшее доступное": "La migliore disponibile",
+  "Начать обработку ": "Avvia elaborazione ",
+  "Отменить загрузку": "Annulla caricamento",
+  "Личный кабинет": "Il mio account",
+  "ЛИЧНОЕ ПРОСТРАНСТВО": "IL TUO SPAZIO",
+  "С возвращением": "Bentornato",
+  "Войдите, чтобы открыть свою библиотеку лекций.": "Accedi per aprire la tua biblioteca di lezioni.",
+  "Войти": "Accedi",
+  "Создать аккаунт": "Crea account",
+  "Логин": "Nome utente",
+  "Пароль": "Password",
+  "Введите логин и пароль вашего кабинета.": "Inserisci nome utente e password del tuo account.",
+  "ВАШ АККАУНТ": "IL TUO ACCOUNT",
+  "Свои буквы": "Le tue iniziali",
+  "Сохранить": "Salva",
+  "Загрузить своё фото": "Carica la tua foto",
+  "лекций": "lezioni",
+  "готово": "pronte",
+  "Изменить пароль": "Cambia password",
+  "Выйти из аккаунта ": "Esci dall’account ",
+  "ПЕРЕМЕСТИТЬ ЛЕКЦИЮ": "SPOSTA LEZIONE",
+  "Переместить лекцию": "Sposta lezione",
+  "Выберите папку или создайте новую.": "Scegli una cartella o creane una nuova.",
+  "Или создать новую папку": "Oppure crea una nuova cartella",
+  "Создать и переместить ": "Crea e sposta ",
+  "Оглавление": "Indice",
+  "Краткий пересказ": "Riassunto",
+  "Обновить пересказ и главы": "Aggiorna riassunto e capitoli",
+  "Перераспознать речь": "Trascrivi di nuovo",
+  "Транскрипт": "Trascrizione",
+  "Главы": "Capitoli",
+  "Удалить лекцию": "Elimina lezione",
+  "Администрирование": "Amministrazione",
+  "Аккаунты": "Account",
+  "Видео на сервере": "Video sul server",
+  "Настройки": "Impostazioni",
+  "Создать папку": "Crea cartella",
+  "Новая папка": "Nuova cartella",
+  "Собрать лекции вместе": "Raggruppa le lezioni",
+  "Дайте папке короткое название. Лекции можно будет перемещать из карточки каждой записи.": "Assegna un nome breve alla cartella. Potrai spostarvi le lezioni dalla scheda di ciascuna lezione.",
+  "Название папки": "Nome della cartella",
+  "Создать папку ": "Crea cartella ",
+  "Папки с лекциями": "Cartelle delle lezioni",
+  "БИБЛИОТЕКА": "BIBLIOTECA",
+  "Все лекции": "Tutte le lezioni",
+  "Свернуть меню": "Comprimi menu",
+  "Развернуть меню": "Espandi menu",
+  "Как устроен проект": "Come funziona il progetto",
+  "Например, Введение в машинное обучение": "Ad esempio: Introduzione all’apprendimento automatico",
+  "Поддерживаются YouTube, VK Видео, Rutube и многие платформы yt-dlp. Доступные разрешения зависят от ролика.": "Sono supportati YouTube, VK Video, Rutube e molte piattaforme di yt-dlp. Le risoluzioni disponibili dipendono dal video.",
+  "Переместить в папку": "Sposta nella cartella",
+  "С начала": "Dall’inizio",
+  "ГОТОВА": "PRONTA",
+  "ОШИБКА": "ERRORE",
+  "ОБРАБОТКА": "IN ELABORAZIONE",
+  "ГОТОВИТСЯ": "IN CODA",
+  "лучшее доступное": "la migliore disponibile",
+  "Краткий конспект": "Appunti brevi",
+  "Загружаем транскрипт…": "Caricamento della trascrizione…",
+  "Разделы появятся после обработки.": "I capitoli appariranno al termine dell’elaborazione.",
+  "Разделы не найдены.": "Nessun capitolo trovato.",
+  "Составляем…": "Creazione in corso…",
+  "Готово": "Fatto",
+  "Сохраняем…": "Salvataggio…",
+  "Аватар сохранён": "Avatar salvato",
+  "Лекция не найдена": "Lezione non trovata",
+  "Лекция по ссылке": "Lezione da un link",
+  "Загрузка модели распознавания": "Caricamento del modello vocale",
+  "НОВАЯ ЛЕКЦИЯ": "NUOVA LEZIONE",
+  "Загрузите видео или вставьте ссылку — остальное мы сделаем сами.": "Carica un video o incolla un link: al resto pensiamo noi.",
+  "· MP4, WebM · до 500 МБ": "· MP4, WebM · fino a 500 MB",
+  "До 2160p · 4K": "Fino a 2160p · 4K",
+  "До 1440p": "Fino a 1440p",
+  "До 1080p · Full HD": "Fino a 1080p · Full HD",
+  "До 720p · HD": "Fino a 720p · HD",
+  "До 480p": "Fino a 480p",
+  "До 360p": "Fino a 360p",
+  "НОВАЯ ПАПКА": "NUOVA CARTELLA",
+  "У каждой учётной записи своя библиотека. Содержимое хранится в зашифрованном виде.": "Ogni account ha la propria biblioteca. I contenuti vengono conservati in forma cifrata.",
+  "Используя Лекторий, вы принимаете": "Utilizzando Lectorium, accetti le",
+  "условия использования": "condizioni d’uso",
+  "Пользователь": "Utente",
+  "Личная библиотека лекций": "Biblioteca personale di lezioni",
+  "БЕЗОПАСНОСТЬ": "SICUREZZA",
+  "Новый пароль": "Nuova password",
+  "Подтвердите текущий пароль и задайте новый.": "Conferma la password attuale e impostane una nuova.",
+  "Текущий пароль": "Password attuale",
+  "Сохранить пароль": "Salva password",
+  "ДОСТУП К АККАУНТУ": "ACCESSO ALL’ACCOUNT",
+  "Задать новый пароль": "Imposta una nuova password",
+  "УПРАВЛЕНИЕ СИСТЕМОЙ": "GESTIONE DEL SISTEMA",
+  "Загружаем данные…": "Caricamento dei dati…",
+  "Авто": "Auto",
+  "Светлая": "Chiaro",
+  "Тёмная": "Scuro",
+  "Сменить тему сайта": "Cambia tema del sito",
+  "Сменить тему сайта: автоматически": "Cambia tema del sito: automatico",
+  "Сменить тему сайта: светлая": "Cambia tema del sito: chiaro",
+  "Сменить тему сайта: тёмная": "Cambia tema del sito: scuro",
+  "Перевести субтитры": "Traduci sottotitoli",
+  "Переводим субтитры…": "Traduzione dei sottotitoli…",
+  "Субтитры переведены": "Sottotitoli tradotti",
+  "Не удалось перевести субтитры": "Impossibile tradurre i sottotitoli",
+  "Не удалось перевести эту часть лекции. Повторите попытку.": "Impossibile tradurre questa parte della lezione. Riprova.",
+  "Перевод занял слишком много времени. Повторите попытку.": "La traduzione ha richiesto troppo tempo. Riprova.",
+  "Язык перевода": "Lingua della traduzione",
+  "Перевод": "Traduzione",
+  "Автоматически": "Automatico",
+  "ЛОКАЛЬНАЯ ДЕМОНСТРАЦИЯ · РАБОТАЕТ БЕЗ ИНТЕРНЕТА": "DEMO LOCALE · FUNZIONA SENZA INTERNET",
+  "Офлайн-стенд": "Demo offline",
+  "Данные примера в комплекте": "Dati di esempio inclusi",
+  "Философия": "Filosofia",
+  "Открыть лекцию": "Apri lezione",
+  "Демо показывает, как устроен путь от видео до знаний.": "La demo mostra il percorso dal video alla conoscenza.",
+  "ЛОКАЛЬНЫЙ ПОИСК ПО ТЕКСТУ": "RICERCA LOCALE NEL TESTO",
+  "Например: как Кант объясняет опыт?": "Ad esempio: come spiega Kant l’esperienza?",
+  "Примеры: Кант · опыт · время": "Esempi: Kant · esperienza · tempo",
+  "ПРИМЕР ДЛЯ ПОКАЗА": "ESEMPIO DIMOSTRATIVO",
+  "ЧТО ПРОИСХОДИТ": "COSA SUCCEDE",
+  "От видео — к понятным моментам": "Dal video ai passaggi chiari",
+  "Загрузка": "Caricamento",
+  "Распознавание": "Riconoscimento vocale",
+  "Навигация": "Navigazione",
+  "В рабочей версии добавляют видеофайл или ссылку на видео.": "Nella versione online si aggiunge un file video o un link.",
+  "Для русской речи используется GigaAM-v3; английская, китайская, немецкая и испанская распознаются мультиязычной моделью. Язык можно определить автоматически, расшифровка сохраняет таймкоды.": "Per il russo si usa GigaAM-v3; le altre lingue sono riconosciute da un modello multilingue. La lingua può essere rilevata automaticamente e la trascrizione conserva i riferimenti temporali.",
+  "Транскрипт, тематические главы и смысловой поиск помогают быстро найти нужный эпизод.": "Trascrizione, capitoli tematici e ricerca semantica aiutano a trovare rapidamente il passaggio desiderato.",
+  "В этой офлайн-демонстрации загрузка выключена. Обработка видео доступна в основной версии на сервере.": "Il caricamento è disattivato in questa demo offline. L’elaborazione dei video è disponibile nella versione sul server.",
+  "В этой папке нет лекций.": "Questa cartella non contiene lezioni.",
+  "Перевод субтитров требует серверной модели и доступен в основной версии сайта.": "La traduzione dei sottotitoli richiede il modello sul server ed è disponibile nella versione online.",
+  "Аватар": "Avatar",
+  "Без папки": "Senza cartella",
+  "Проверьте подключение и попробуйте ещё раз.": "Controlla la connessione e riprova.",
+  "Очередь обработки": "Coda di elaborazione",
+  "Лекция принята": "Lezione in coda",
+  "Обрабатываем лекцию": "Elaborazione della lezione",
+  "Конспект появится после обработки.": "Il riassunto apparirà al termine dell’elaborazione.",
+  "Автоопределение языка": "Rilevamento automatico della lingua",
+  "🌐 Автоопределение языка": "Rilevamento automatico della lingua",
+  "По умолчанию язык определяется по речи в видео. Интерфейс настраивается отдельно.": "La lingua del video viene rilevata automaticamente. La lingua dell’interfaccia si imposta separatamente.",
+  "Закрыть": "Chiudi",
+  "Действия": "Azioni",
+  "Меню лекции": "Menu della lezione",
+  "Найти идею в лекциях": "Trova un’idea nelle lezioni",
+  "Например: как работает градиентный спуск?": "Ad esempio: come funziona la discesa del gradiente?",
+  "Повторить обработку": "Riprova elaborazione",
+  "Нажмите, чтобы увидеть ошибку": "Fai clic per vedere l’errore",
+  "Не удалось обработать речь": "Impossibile elaborare il parlato",
+  "Отменить обработку": "Annulla elaborazione",
+  "ОТМЕНЕНА": "ANNULLATA",
+  "Обработка отменена": "Elaborazione annullata",
+  "Войти через": "Accedi con",
+  "Скачать видео": "Scarica video",
+  "Итальянский": "Italiano",
+  "Переместить лекцию в папку": "Sposta la lezione nella cartella",
+  "Все записи": "Tutte le registrazioni",
+  "Профиль пользователя": "Profilo utente",
+  "Роль": "Ruolo",
+  "Администратор": "Amministratore",
+  "Дата регистрации": "Data di registrazione",
+  "Просмотреть профиль": "Visualizza profilo",
+  "Сохранить настройки": "Salva impostazioni",
+  "Проверить прокси": "Verifica proxy",
+  "Пользователи": "Utenti",
+  "Создайте аккаунт": "Crea un account",
+  "Создайте личное пространство для своих лекций.": "Crea uno spazio personale per le tue lezioni.",
+  "Создать кабинет": "Crea account"
+};
+  Object.assign(locales.it,{"Открыть лекцию ↗": "Apri lezione ↗", "ДЕМО · 23 МИН": "DEMO · 23 MIN", "Перейти к поиску": "Vai alla ricerca", "23:24 · 4 главы · русский язык": "23:24 · 4 capitoli · lingua russa", "Русская речь распознаётся GigaAM-v3; английская, китайская, немецкая и испанская — мультиязычной моделью. Язык ролика можно определить автоматически. Расшифровка сохраняется с таймкодами.": "Il russo viene riconosciuto da GigaAM-v3; inglese, cinese, tedesco, spagnolo e italiano da Whisper. La lingua può essere rilevata automaticamente. La trascrizione conserva i riferimenti temporali.", 'В очереди на обработку…':'In attesa di elaborazione…','Прошло':'Trascorso','примерно осталось':'mancano circa','осталось':'mancano','завершаем текущий этап':'completamento della fase corrente','Не удалось перевести содержание лекции. Нажмите, чтобы повторить.':'Impossibile tradurre il contenuto della lezione. Fai clic per riprovare.','Перевод продолжается в фоне. Откройте лекцию позже.':'La traduzione continua in background. Riapri la lezione più tardi.','Не удалось обновить пересказ и главы. Нажмите, чтобы повторить.':'Impossibile aggiornare il riepilogo e i capitoli. Fai clic per riprovare.','Пересчёт продолжается в фоне. Откройте лекцию позже.':'L’aggiornamento continua in background. Riapri la lezione più tardi.'});
   const localesOrder=['ru','en','zh','de','es'];
   for(const row of extraRows)for(let index=0;index<localesOrder.length;index++)if(localesOrder[index])locales[localesOrder[index]][row[0]]=row[index];
   for(const locale of Object.keys(locales))locales[locale]=Object.fromEntries(Object.entries(locales[locale]).map(([key,value])=>[normalize(key),value]));
   const pageTitles=document.querySelector('.offline-banner')
-    ?{ru:'Лекторий — локальная демонстрация',en:'Lectorium — offline demo',zh:'Lectorium — 离线演示',de:'Lectorium — Offline-Demo',es:'Lectorium — demo sin conexión'}
-    :{ru:'Лекторий — поиск по смыслу',en:'Lectorium — semantic lecture search',zh:'Lectorium — 课程语义搜索',de:'Lectorium — semantische Vorlesungssuche',es:'Lectorium — búsqueda semántica en clases'};
+    ?{ru:'Лекторий — локальная демонстрация',en:'Lectorium — offline demo',zh:'Lectorium — 离线演示',de:'Lectorium — Offline-Demo',es:'Lectorium — demo sin conexión',it:'Lectorium — demo offline'}
+    :{ru:'Лекторий — поиск по смыслу',en:'Lectorium — semantic lecture search',zh:'Lectorium — 课程语义搜索',de:'Lectorium — semantische Vorlesungssuche',es:'Lectorium — búsqueda semántica en clases',it:'Lectorium — ricerca semantica nelle lezioni'};
   const playerLabels={
     ru:['С начала','Назад на {seektime} сек.','Воспроизвести','Пауза','Вперёд на {seektime} сек.','Перемотка','{currentTime} из {duration}','Просмотрено','Загружено','Текущее время','Длительность','Громкость','Выключить звук','Включить звук','Скачать видео','На весь экран','Выйти из полноэкранного режима','Видеоплеер: {title}','Субтитры','Настройки','Картинка в картинке','Назад','Скорость','Обычная','Качество','Повтор','Начало','Конец','Все','Сбросить','Выключено','Включено','Реклама'],
     en:['Restart','Rewind {seektime} seconds','Play','Pause','Forward {seektime} seconds','Seek','{currentTime} of {duration}','Played','Buffered','Current time','Duration','Volume','Mute','Unmute','Download video','Enter fullscreen','Exit fullscreen','Video player: {title}','Captions','Settings','Picture in picture','Back','Speed','Normal','Quality','Loop','Start','End','All','Reset','Disabled','Enabled','Advertisement'],
@@ -149,6 +361,7 @@
     de:['Neustart','{seektime} Sekunden zurück','Abspielen','Pause','{seektime} Sekunden vor','Suchen','{currentTime} von {duration}','Abgespielt','Gepuffert','Aktuelle Zeit','Dauer','Lautstärke','Stumm','Ton an','Video herunterladen','Vollbild öffnen','Vollbild verlassen','Videoplayer: {title}','Untertitel','Einstellungen','Bild im Bild','Zurück','Geschwindigkeit','Normal','Qualität','Wiederholen','Start','Ende','Alle','Zurücksetzen','Deaktiviert','Aktiviert','Werbung'],
     es:['Reiniciar','Retroceder {seektime} s','Reproducir','Pausa','Avanzar {seektime} s','Buscar','{currentTime} de {duration}','Reproducido','Cargado','Tiempo actual','Duración','Volumen','Silenciar','Activar sonido','Descargar vídeo','Entrar en pantalla completa','Salir de pantalla completa','Reproductor de vídeo: {title}','Subtítulos','Ajustes','Imagen en imagen','Volver','Velocidad','Normal','Calidad','Repetir','Inicio','Fin','Todos','Restablecer','Desactivado','Activado','Anuncio']
   };
+  playerLabels.it=["Ricomincia", "Indietro di {seektime} secondi", "Riproduci", "Pausa", "Avanti di {seektime} secondi", "Cerca", "{currentTime} di {duration}", "Riprodotto", "Caricato", "Tempo attuale", "Durata", "Volume", "Disattiva audio", "Attiva audio", "Scarica video", "Schermo intero", "Esci da schermo intero", "Lettore video: {title}", "Sottotitoli", "Impostazioni", "Picture in picture", "Indietro", "Velocità", "Normale", "Qualità", "Ripeti", "Inizio", "Fine", "Tutti", "Reimposta", "Disattivato", "Attivato", "Pubblicità"];
   const playerKeys=['restart','rewind','play','pause','fastForward','seek','seekLabel','played','buffered','currentTime','duration','volume','mute','unmute','download','enterFullscreen','exitFullscreen','frameTitle','captions','settings','pip','menuBack','speed','normal','quality','loop','start','end','all','reset','disabled','enabled','advertisement'];
   window.getPlayerTranslations=locale=>Object.fromEntries(playerKeys.map((key,index)=>[key,playerLabels[locale]?.[index]||playerLabels.ru[index]]));
   const originalText = new WeakMap(), lastWrittenText = new WeakMap(), originalAttrs = new WeakMap(), lastWrittenAttrs = new WeakMap(), textNodes = new Set(), attrNodes = new Set();
@@ -180,11 +393,12 @@
     }
   }
   function visit(root){
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){return node.parentElement?.closest('script,style')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{acceptNode(node){return node.parentElement?.closest('script,style,[data-no-translate],.transcript-line,.summary-text,.chapter-title,.lecture-card h3,#detailTitle')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});
     let node;while(node=walker.nextNode())translateText(node);
     if(root.nodeType===1){translateAttrs(root);root.querySelectorAll('*').forEach(translateAttrs)}
   }
-  function setLanguage(locale){
+  function setLanguage(locale,reloadAfterChange=false){
+    const previousLanguage=language;
     if(!locales[locale])locale='ru'; language=locale; document.documentElement.lang=locale;
     try{localStorage.setItem('lectoriumLanguage',locale)}catch{}
     const picker=document.querySelector('#siteLanguage');if(picker)picker.value=locale;
@@ -194,13 +408,18 @@
     visit(document.body);
     document.title=pageTitles[locale];
     const headline=document.querySelector('#heroHeadline');
-    if(headline)headline.innerHTML={ru:'В каждой лекции<br>есть <em>ответ.</em>',en:'Every lecture has<br>an <em>answer.</em>',zh:'每堂课中<br>都有<em>答案。</em>',de:'In jeder Vorlesung<br>steckt eine <em>Antwort.</em>',es:'Cada clase tiene<br>una <em>respuesta.</em>'}[locale];
+    if(headline)headline.innerHTML={ru:'В каждой лекции<br>есть <em>ответ.</em>',en:'Every lecture has<br>an <em>answer.</em>',zh:'每堂课中<br>都有<em>答案。</em>',de:'In jeder Vorlesung<br>steckt eine <em>Antwort.</em>',es:'Cada clase tiene<br>una <em>respuesta.</em>',it:'In ogni lezione<br>c’è <em>una risposta.</em>'}[locale];
     writing=false;
     window.dispatchEvent(new CustomEvent('lectorium:language-change',{detail:{locale}}));
+    if(reloadAfterChange&&previousLanguage!==locale){
+      const resume=window.getLectureResumeState?.();
+      if(resume)try{sessionStorage.setItem('lectoriumResumeLecture',JSON.stringify(resume))}catch{}
+      window.location.reload();
+    }
   }
   const picker=document.querySelector('#siteLanguage');
   let saved='ru';try{saved=localStorage.getItem('lectoriumLanguage')||'ru'}catch{}
-  if(picker)picker.addEventListener('change',()=>setLanguage(picker.value));
+  if(picker)picker.addEventListener('change',()=>setLanguage(picker.value,true));
   window.t=tr; window.getUiLanguage=()=>language; window.setUiLanguage=setLanguage;
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setLanguage(saved),{once:true});else setLanguage(saved);
   const observer=new MutationObserver(records=>{
